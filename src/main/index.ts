@@ -2,6 +2,7 @@ import { join } from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 
 import { isDev } from './consts';
+import { tabsStore } from './stores/tabs';
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -18,10 +19,10 @@ const createWindow = () => {
   });
 
   if (isDev) {
-    win.loadURL('http://localhost:9090/index.html#songs');
+    win.loadURL('http://localhost:9090/index.html');
     win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    win.loadFile(join(__dirname, 'index.html'), { hash: 'songs' });
+    win.loadFile(join(__dirname, 'index.html'));
   }
 
   win.once('ready-to-show', () => win.show());
@@ -37,6 +38,11 @@ const createWindow = () => {
     win.on('unmaximize', send);
     win.on('restore', send);
     event.returnValue = win.isMaximized();
+  });
+
+  ipcMain.on('getTabs', (event) => {
+    tabsStore.onDidChange('tabs', (newValue) => event.sender.send('tabsChanged', newValue));
+    event.returnValue = tabsStore.store.tabs;
   });
 };
 

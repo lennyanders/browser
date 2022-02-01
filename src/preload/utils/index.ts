@@ -6,7 +6,7 @@ import { ipcRenderer } from 'electron';
 export const get = <T>(getChannel: string, cbChannel: string) => {
   type Callback = (type: T) => void;
   let first = true;
-  let res: any;
+  let res: T;
   let cb: Callback;
   return (callback: Callback) => {
     cb = callback;

@@ -16,17 +16,17 @@
 <template>
   <div class="address-bar">
     <button class="address-bar__button" aria-label="backwards in history">
-      <Icon :path="mdiArrowLeft" />
+      <Icon :path="mdiArrowLeft" size="l" />
     </button>
     <button class="address-bar__button" aria-label="forwards in hsitory">
-      <Icon :path="mdiArrowRight" />
+      <Icon :path="mdiArrowRight" size="l" />
     </button>
     <button class="address-bar__button" aria-label="reload page">
-      <Icon :path="mdiReload" />
+      <Icon :path="mdiReload" size="l" />
     </button>
     <form class="url-bar" action="">
       <button type="button" class="url-bar__button url-bar__button--info" aria-label="page info">
-        <Icon :path="mdiInformationOutline" />
+        <Icon :path="mdiInformationOutline" size="l" />
       </button>
       <input
         type="url"
@@ -38,17 +38,17 @@
         class="url-bar__button url-bar__button--bookmark"
         aria-label="add to bookmarks"
       >
-        <Icon :path="mdiBookmarkPlusOutline" />
+        <Icon :path="mdiBookmarkPlusOutline" size="l" />
       </button>
     </form>
     <button class="address-bar__button" aria-label="extensions">
-      <Icon :path="mdiPuzzleOutline" />
+      <Icon :path="mdiPuzzleOutline" size="l" />
     </button>
     <button class="address-bar__button" aria-label="bookmarks">
-      <Icon :path="mdiBookmarkOutline" />
+      <Icon :path="mdiBookmarkOutline" size="l" />
     </button>
     <button class="address-bar__button" aria-label="menu">
-      <Icon :path="mdiDotsHorizontal" />
+      <Icon :path="mdiDotsHorizontal" size="l" />
     </button>
     <WindowControls />
   </div>

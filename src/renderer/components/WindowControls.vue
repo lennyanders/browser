@@ -1,11 +1,10 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { getToRef } from '../utils';
   import WindowControlButton from './WindowControlButton.vue';
 
   const { windowActions } = window.browser;
 
-  const isMaximized = ref(false);
-  isMaximized.value = windowActions.getMaximizedState((newState) => (isMaximized.value = newState));
+  const isMaximized = getToRef(windowActions.getMaximizedState);
 </script>
 
 <template>

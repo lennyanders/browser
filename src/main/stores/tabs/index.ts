@@ -28,6 +28,7 @@ export const tabsStore = new Store({
         {
           title: 'New tab',
           url: 'browser://newtab',
+          active: true,
         },
       ],
     },

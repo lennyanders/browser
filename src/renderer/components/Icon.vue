@@ -12,7 +12,7 @@
   <svg
     role="img"
     aria-hidden="true"
-    :width="size && `${sizes[size]}rem`"
+    :width="`${sizes[size || 'm']}rem`"
     viewBox="0 0 24 24"
     class="icon"
   >

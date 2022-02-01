@@ -42,7 +42,27 @@ const createWindow = () => {
 
   ipcMain.on('getTabs', (event) => {
     tabsStore.onDidChange('tabs', (newValue) => event.sender.send('tabsChanged', newValue));
-    event.returnValue = tabsStore.store.tabs;
+    event.returnValue = tabsStore.get('tabs');
+  });
+  ipcMain.on('newTab', () => {
+    const tabs = tabsStore.get('tabs').map((tab) => ((tab.active = false), tab));
+    tabs.push({ title: 'New tab', url: 'browser://newtab', active: true });
+    tabsStore.set('tabs', tabs);
+  });
+  ipcMain.on('setActiveTab', (_, index: number) => {
+    const tabs = tabsStore.get('tabs').map((tab, i) => ((tab.active = i === index), tab));
+    tabsStore.set('tabs', tabs);
+  });
+  ipcMain.on('deleteTab', (_, index: number) => {
+    const tabs = tabsStore.get('tabs');
+    if (tabs.length === 1) app.quit();
+    if (tabs[index].active) {
+      console.log(tabs[index + 1] || tabs[index - 1]);
+
+      (tabs[index + 1] || tabs[index - 1]).active = true;
+    }
+    const filteredTabs = tabs.filter((_, i) => i !== index);
+    tabsStore.set('tabs', filteredTabs);
   });
 };
 

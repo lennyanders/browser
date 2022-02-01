@@ -13,6 +13,9 @@ const windowActions = {
 
 const tabs = {
   getAll: get<Tab[]>('getTabs', 'tabsChanged'),
+  newTab: () => ipcRenderer.send('newTab'),
+  setActiveTab: (index: number) => ipcRenderer.send('setActiveTab', index),
+  deleteTab: (index: number) => ipcRenderer.send('deleteTab', index),
 };
 
 const browser = { windowActions, tabs };

@@ -24,6 +24,7 @@
   .tabs {
     grid-area: tabs;
     width: 2.5rem;
+    z-index: 1;
 
     &__inner {
       float: right;

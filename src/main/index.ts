@@ -2,7 +2,7 @@ import { join } from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 
 import { isDev } from './consts';
-import { tabsStore } from './stores/tabs';
+import { Tab, tabsStore } from './stores/tabs';
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -63,6 +63,11 @@ const createWindow = () => {
     }
     const filteredTabs = tabs.filter((_, i) => i !== index);
     tabsStore.set('tabs', filteredTabs);
+  });
+  ipcMain.on('updateTab', (_, index: number, partialTab: Partial<Tab>) => {
+    const tabs = tabsStore.get('tabs');
+    tabs[index] = { ...tabs[index], ...partialTab };
+    tabsStore.set('tabs', tabs);
   });
 };
 

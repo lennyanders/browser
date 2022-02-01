@@ -2,6 +2,10 @@
   import { ref } from 'vue';
   import { tabs } from '../stores/tabs';
 
+  // const { log } = console;
+
+  const { updateTab } = window.browser.tabs;
+
   const targetUrl = ref('');
   const setTargetUrl = (event: Event & { url: string }) => (targetUrl.value = event.url);
 </script>
@@ -9,11 +13,14 @@
 <template>
   <div class="webpage">
     <webview
-      v-for="tab of tabs"
+      v-for="(tab, index) of tabs"
       class="webpage__view"
       src="https://lenny.fyi"
       :hidden="!tab.active"
       @update-target-url.passive="setTargetUrl"
+      @did-navigate.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"
+      @did-frame-navigate.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"
+      @did-navigate-in-page.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"
     ></webview>
     <span class="target-url" :hidden="!targetUrl">{{ targetUrl }}</span>
   </div>

@@ -9,8 +9,13 @@
     mdiBookmarkOutline,
     mdiPuzzleOutline,
   } from '@mdi/js';
+  import { computed } from 'vue';
+  import { tabs } from '../stores/tabs';
   import Icon from './Icon.vue';
   import WindowControls from './WindowControls.vue';
+
+  const activeTab = computed(() => tabs.value?.find((tab) => tab.active));
+  const activeTabUrl = computed(() => activeTab.value?.url);
 </script>
 
 <template>
@@ -32,6 +37,7 @@
         type="url"
         class="url-bar__input"
         placeholder="Search with DuckDuckGo or enter address"
+        v-model="activeTabUrl"
       />
       <button
         type="button"

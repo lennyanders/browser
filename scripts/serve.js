@@ -1,7 +1,7 @@
 import { rm, mkdir } from 'fs/promises';
 import { build } from 'esbuild';
 import { createServer } from 'vite';
-import preact from '@preact/preset-vite';
+import vue from '@vitejs/plugin-vue';
 import electronmon from 'electronmon';
 
 /** @type {import('esbuild').BuildOptions} */
@@ -39,8 +39,15 @@ await build({
 const server = await createServer({
   configFile: false,
   root: 'src/renderer',
-  css: { modules: { localsConvention: 'camelCase' } },
-  plugins: [preact()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag === 'webview',
+        },
+      },
+    }),
+  ],
 });
 await server.listen(9090);
 

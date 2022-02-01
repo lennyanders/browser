@@ -1,7 +1,7 @@
 import { rm, mkdir } from 'fs/promises';
 import { build } from 'esbuild';
 import { build as viteBuild } from 'vite';
-import preact from '@preact/preset-vite';
+import vue from '@vitejs/plugin-vue';
 import { build as electronBuild } from 'electron-builder';
 
 /** @type {import('esbuild').BuildOptions} */
@@ -37,8 +37,15 @@ await viteBuild({
   configFile: false,
   root: 'src/renderer',
   base: './',
-  css: { modules: { localsConvention: 'camelCase' } },
-  plugins: [preact()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag === 'webview',
+        },
+      },
+    }),
+  ],
   build: {
     outDir: `${process.cwd()}/dist`,
   },

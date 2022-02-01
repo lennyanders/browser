@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@preact/preset-vite": "^2.1.7",
+    "@vitejs/plugin-vue": "^2.1.0",
     "electron": "^16.0.8",
     "electron-builder": "^22.14.5",
     "electronmon": "^2.0.2",
@@ -23,7 +23,7 @@
   "dependencies": {
     "@mdi/js": "^6.5.95",
     "electron-store": "^8.0.1",
-    "preact": "^10.6.5",
-    "totalist": "^3.0.0"
+    "totalist": "^3.0.0",
+    "vue": "^3.2.29"
   }
 }

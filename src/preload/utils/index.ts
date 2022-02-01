@@ -6,14 +6,14 @@ import { ipcRenderer } from 'electron';
 export const get = <T>(getChannel: string, cbChannel: string) => {
   type Callback = (type: T) => void;
   let first = true;
-  let res: T;
+  let res: any;
   let cb: Callback;
   return (callback: Callback) => {
     cb = callback;
     if (!first) return res;
 
-    ipcRenderer.on(cbChannel, (_, newState: Partial<T>) => {
-      if (typeof newState === 'object') res = { ...res, ...newState };
+    ipcRenderer.on(cbChannel, (_, newState: any) => {
+      if (typeof newState === 'object' && !Array.isArray(newState)) res = { ...res, ...newState };
       else res = newState;
       cb(res);
     });

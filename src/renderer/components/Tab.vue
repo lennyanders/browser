@@ -46,6 +46,7 @@
     line-height: 2rem;
     overflow: hidden;
     background-color: var(--tab-bg);
+    font-size: 0.875rem;
     transition: --tab-bg 0.2s ease, color 0.2s ease;
 
     &:hover {
@@ -80,6 +81,7 @@
       position: absolute;
       top: 0;
       right: 0;
+      padding-left: 0.25rem;
       display: flex;
       background-color: inherit;
       transform: translateX(2rem);

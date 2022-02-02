@@ -25,6 +25,7 @@
       @did-navigate.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
       @did-frame-navigate.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
       @did-navigate-in-page.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
+      @page-title-updated.passive="(event: Event & { title: string }) => updateTab(tab.id, { title: event.title })"
     ></webview>
     <span class="target-url" :hidden="!targetUrl">{{ targetUrl }}</span>
   </div>

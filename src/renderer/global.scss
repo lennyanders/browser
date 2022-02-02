@@ -31,7 +31,8 @@ input {
   color: inherit;
 }
 
-ul:where([class]) {
+ul:where([class]),
+ol:where([class]) {
   padding: 0;
   margin: 0;
   list-style: none;

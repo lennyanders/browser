@@ -3,14 +3,14 @@
   import { Tab } from '../../main/stores/tabs';
   import Icon from './Icon.vue';
 
-  defineProps<{ tab: Tab; index: number }>();
+  defineProps<{ tab: Tab }>();
 
   const { setActiveTab, deleteTab } = window.browser.tabs;
 </script>
 
 <template>
   <li class="tab" :class="{ 'tab--active': tab.active }">
-    <button type="button" class="tab__title" @click.passive="() => setActiveTab(index)">
+    <button type="button" class="tab__title" @click.passive="setActiveTab(tab.id)">
       {{ tab.title }}
     </button>
     <div class="tab__icons">
@@ -22,7 +22,7 @@
         type="button"
         class="tab__icon"
         aria-label="close tab"
-        @click.passive="() => deleteTab(index)"
+        @click.passive="deleteTab(tab.id)"
       >
         <Icon :path="mdiClose" />
       </button>
@@ -58,6 +58,16 @@
       --tab-bg: var(--bg-color-active);
     }
 
+    &--dragged-tab {
+      outline: 0.125rem dashed var(--bg-color-active);
+      outline-offset: -0.5rem;
+      background-color: transparent;
+
+      > * {
+        opacity: 0;
+      }
+    }
+
     &__title {
       padding-left: 0.5rem;
       width: 100%;
@@ -86,7 +96,7 @@
       }
     }
 
-    &:is(:hover, .tab--dragged-tab) &__icons {
+    &:hover &__icons {
       transform: none;
     }
 

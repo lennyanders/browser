@@ -14,11 +14,11 @@ const windowActions = {
 const tabs = {
   getAll: get<Tab[]>('getTabs', 'tabsChanged'),
   newTab: () => ipcRenderer.send('newTab'),
-  setActiveTab: (index: number) => ipcRenderer.send('setActiveTab', index),
-  deleteTab: (index: number) => ipcRenderer.send('deleteTab', index),
+  setActiveTab: (id: number) => ipcRenderer.send('setActiveTab', id),
+  deleteTab: (id: number) => ipcRenderer.send('deleteTab', id),
   updateActiveTab: (partialTab: Partial<Tab>) => ipcRenderer.send('updateActiveTab', partialTab),
-  updateTab: (index: number, partialTab: Partial<Tab>) => {
-    ipcRenderer.send('updateTab', index, partialTab);
+  updateTab: (id: number, partialTab: Partial<Tab>) => {
+    ipcRenderer.send('updateTab', id, partialTab);
   },
 };
 

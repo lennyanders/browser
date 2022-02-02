@@ -10,9 +10,9 @@
 <template>
   <div class="tabs">
     <div class="tabs__inner">
-      <ul class="tabs__list">
-        <Tab v-for="(tab, index) of tabs" :tab="tab" :index="index" />
-      </ul>
+      <ol class="tabs__list">
+        <Tab v-for="tab of tabs" :tab="tab" :key="tab.id" />
+      </ol>
       <button type="button" class="tabs__newtab" @click.passive="newTab">
         <Icon :path="mdiPlus" />
       </button>

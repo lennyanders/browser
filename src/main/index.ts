@@ -45,29 +45,37 @@ const createWindow = () => {
     event.returnValue = tabsStore.get('tabs');
   });
   ipcMain.on('newTab', () => {
-    const tabs = tabsStore.get('tabs').map((tab) => ((tab.active = false), tab));
-    tabs.push({ title: 'New tab', url: 'browser://newtab', active: true });
-    tabsStore.set('tabs', tabs);
+    const tabs = tabsStore.store.tabs.map((tab) => ((tab.active = false), tab));
+    tabs.push({
+      title: 'New tab',
+      url: 'browser://newtab',
+      active: true,
+      id: tabsStore.store.nextTabId,
+    });
+    tabsStore.set({ tabs, nextTabId: tabsStore.store.nextTabId + 1 });
   });
-  ipcMain.on('setActiveTab', (_, index: number) => {
-    const tabs = tabsStore.get('tabs').map((tab, i) => ((tab.active = i === index), tab));
-    tabsStore.set('tabs', tabs);
+  ipcMain.on('setActiveTab', (_, id: number) => {
+    const tabs = tabsStore.store.tabs.map<Tab>((tab) => ({ ...tab, active: tab.id === id }));
+    tabsStore.set({ tabs });
   });
-  ipcMain.on('deleteTab', (_, index: number) => {
+  ipcMain.on('deleteTab', (_, id: number) => {
     const tabs = tabsStore.get('tabs');
     if (tabs.length === 1) app.quit();
-    if (tabs[index].active) (tabs[index + 1] || tabs[index - 1]).active = true;
-    const filteredTabs = tabs.filter((_, i) => i !== index);
-    tabsStore.set('tabs', filteredTabs);
-  });
-  ipcMain.on('updateTab', (_, index: number, partialTab: Partial<Tab>) => {
-    const tabs = tabsStore.get('tabs');
-    tabs[index] = { ...tabs[index], ...partialTab };
-    tabsStore.set('tabs', tabs);
+
+    const tabIndex = tabs.findIndex((tab) => tab.id === id);
+    if (tabs[tabIndex].active) (tabs[tabIndex + 1] || tabs[tabIndex - 1]).active = true;
+    tabs.splice(tabIndex, 1);
+    tabsStore.set({ tabs });
   });
   ipcMain.on('updateActiveTab', (_, partialTab: Partial<Tab>) => {
     const tabs = tabsStore.get('tabs').map((tab) => (tab.active ? { ...tab, ...partialTab } : tab));
-    tabsStore.set('tabs', tabs);
+    tabsStore.set({ tabs });
+  });
+  ipcMain.on('updateTab', (_, id: number, partialTab: Partial<Tab>) => {
+    const tabs = tabsStore.store.tabs.map((tab) => {
+      return tab.id === id ? { ...tab, ...partialTab } : tab;
+    });
+    tabsStore.set({ tabs });
   });
 };
 

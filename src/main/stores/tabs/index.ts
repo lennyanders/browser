@@ -3,6 +3,7 @@ import type { Schema } from 'electron-store';
 import { userDataPath } from '../../consts';
 
 export type Tab = {
+  id: number;
   title: string;
   url: string;
   active?: boolean;
@@ -12,7 +13,7 @@ export type Tab = {
 export const tabsStore = new Store({
   name: 'tabs',
   cwd: userDataPath,
-  schema: <Schema<{ tabs: Tab[] }>>{
+  schema: <Schema<{ tabs: Tab[]; nextTabId: number }>>{
     tabs: {
       type: 'array',
       items: {
@@ -26,11 +27,16 @@ export const tabsStore = new Store({
       },
       default: [
         {
+          id: 0,
           title: 'New tab',
           url: 'browser://newtab',
           active: true,
         },
       ],
+    },
+    nextTabId: {
+      type: 'number',
+      default: 1,
     },
   },
 });

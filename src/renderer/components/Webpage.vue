@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   import { tabs } from '../stores/tabs';
 
-  // const { log } = console;
+  // order tabs by id, so v-for will not reorder/patch dom after sorting
+  const orderedTab = computed(() =>
+    tabs.value ? tabs.value.slice().sort((a, b) => a.id - b.id) : [],
+  );
 
   const { updateTab } = window.browser.tabs;
 
@@ -13,14 +16,15 @@
 <template>
   <div class="webpage">
     <webview
-      v-for="(tab, index) of tabs"
+      v-for="tab of orderedTab"
+      :key="tab.id"
       class="webpage__view"
       :src="tab.url"
       :hidden="!tab.active"
       @update-target-url.passive="setTargetUrl"
-      @did-navigate.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"
-      @did-frame-navigate.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"
-      @did-navigate-in-page.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"
+      @did-navigate.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
+      @did-frame-navigate.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
+      @did-navigate-in-page.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
     ></webview>
     <span class="target-url" :hidden="!targetUrl">{{ targetUrl }}</span>
   </div>

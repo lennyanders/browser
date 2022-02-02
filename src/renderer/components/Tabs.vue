@@ -14,7 +14,7 @@
 
 <template>
   <div class="tabs">
-    <div class="tabs__inner">
+    <div class="tabs__inner" @dblclick.passive.self="newTab">
       <Draggable
         :modelValue="tabs"
         itemKey="id"

@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.1.0",
-    "electron": "^16.0.8",
+    "electron": "^17.0.0",
     "electron-builder": "^22.14.5",
     "electronmon": "^2.0.2",
     "esbuild": "^0.14.14",

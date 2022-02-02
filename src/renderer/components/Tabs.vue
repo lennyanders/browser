@@ -1,18 +1,34 @@
 <script setup lang="ts">
+  import Draggable from 'vuedraggable';
   import { mdiPlus } from '@mdi/js';
   import { tabs } from '../stores/tabs';
   import Icon from './Icon.vue';
   import Tab from './Tab.vue';
 
-  const { newTab } = window.browser.tabs;
+  const { newTab, updateTabPosition } = window.browser.tabs;
+
+  const onDragEnd = (event: Event & { oldIndex: number; newIndex: number }) => {
+    updateTabPosition(event.oldIndex, event.newIndex);
+  };
 </script>
 
 <template>
   <div class="tabs">
     <div class="tabs__inner">
-      <ol class="tabs__list">
-        <Tab v-for="tab of tabs" :tab="tab" :key="tab.id" />
-      </ol>
+      <Draggable
+        :modelValue="tabs"
+        itemKey="id"
+        tag="ol"
+        class="tabs__list"
+        group="tabs"
+        :animation="100"
+        ghostClass="tab--dragged-tab"
+        @end="onDragEnd"
+      >
+        <template #item="{ element }">
+          <Tab :tab="element" />
+        </template>
+      </Draggable>
       <button type="button" class="tabs__newtab" @click.passive="newTab">
         <Icon :path="mdiPlus" />
       </button>

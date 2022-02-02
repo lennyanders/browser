@@ -20,6 +20,9 @@ const tabs = {
   updateTab: (id: number, partialTab: Partial<Tab>) => {
     ipcRenderer.send('updateTab', id, partialTab);
   },
+  updateTabPosition: (oldIndex: number, newIndex: number) => {
+    ipcRenderer.send('updateTabPosition', oldIndex, newIndex);
+  },
 };
 
 const browser = { windowActions, tabs };

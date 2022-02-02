@@ -24,6 +24,7 @@
     "@mdi/js": "^6.5.95",
     "electron-store": "^8.0.1",
     "totalist": "^3.0.0",
-    "vue": "^3.2.29"
+    "vue": "^3.2.29",
+    "vuedraggable": "^4.1.0"
   }
 }

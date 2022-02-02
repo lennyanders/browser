@@ -48,7 +48,8 @@ const createWindow = () => {
     const tabs = tabsStore.store.tabs.map((tab) => ((tab.active = false), tab));
     tabs.push({
       title: 'New tab',
-      url: 'browser://newtab',
+      // url: 'browser://newtab',
+      url: 'https://lenny.fyi/',
       active: true,
       id: tabsStore.store.nextTabId,
     });
@@ -75,6 +76,11 @@ const createWindow = () => {
     const tabs = tabsStore.store.tabs.map((tab) => {
       return tab.id === id ? { ...tab, ...partialTab } : tab;
     });
+    tabsStore.set({ tabs });
+  });
+  ipcMain.on('updateTabPosition', (_, oldIndex: number, newIndex: number) => {
+    const tabs = tabsStore.get('tabs');
+    tabs.splice(newIndex, 0, tabs.splice(oldIndex, 1)[0]);
     tabsStore.set({ tabs });
   });
 };

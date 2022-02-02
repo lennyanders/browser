@@ -9,13 +9,32 @@
     mdiBookmarkOutline,
     mdiPuzzleOutline,
   } from '@mdi/js';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { tabs } from '../stores/tabs';
   import Icon from './Icon.vue';
   import WindowControls from './WindowControls.vue';
 
-  const activeTab = computed(() => tabs.value?.find((tab) => tab.active));
-  const activeTabUrl = computed(() => activeTab.value?.url);
+  const activeTabUrl = computed({
+    get: () => tabs.value?.find((tab) => tab.active)?.url || '',
+    set: () => {},
+  });
+
+  let urlInputFocused = ref(false);
+  const urlInput = ref<HTMLInputElement>();
+  const updateActiveTab = () => {
+    window.browser.tabs.updateActiveTab({ url: urlInput.value?.value });
+  };
+
+  const onClick = () => {
+    if (urlInputFocused.value) return;
+    urlInputFocused.value = true;
+    urlInput.value!.select();
+  };
+
+  const onBlur = () => {
+    urlInputFocused.value = false;
+    window.getSelection()?.removeAllRanges();
+  };
 </script>
 
 <template>
@@ -29,7 +48,7 @@
     <button class="address-bar__button" aria-label="reload page">
       <Icon :path="mdiReload" size="l" />
     </button>
-    <form class="url-bar" action="">
+    <form class="url-bar" @submit.prevent="updateActiveTab">
       <button type="button" class="url-bar__button url-bar__button--info" aria-label="page info">
         <Icon :path="mdiInformationOutline" size="l" />
       </button>
@@ -37,7 +56,11 @@
         type="url"
         class="url-bar__input"
         placeholder="Search with DuckDuckGo or enter address"
-        v-model="activeTabUrl"
+        ref="urlInput"
+        :value="activeTabUrl"
+        @keyup.passive.esc="() =>  urlInput!.value = activeTabUrl"
+        @click.passive="onClick"
+        @blur.passive="onBlur"
       />
       <button
         type="button"

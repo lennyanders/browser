@@ -56,17 +56,17 @@ const createWindow = () => {
   ipcMain.on('deleteTab', (_, index: number) => {
     const tabs = tabsStore.get('tabs');
     if (tabs.length === 1) app.quit();
-    if (tabs[index].active) {
-      console.log(tabs[index + 1] || tabs[index - 1]);
-
-      (tabs[index + 1] || tabs[index - 1]).active = true;
-    }
+    if (tabs[index].active) (tabs[index + 1] || tabs[index - 1]).active = true;
     const filteredTabs = tabs.filter((_, i) => i !== index);
     tabsStore.set('tabs', filteredTabs);
   });
   ipcMain.on('updateTab', (_, index: number, partialTab: Partial<Tab>) => {
     const tabs = tabsStore.get('tabs');
     tabs[index] = { ...tabs[index], ...partialTab };
+    tabsStore.set('tabs', tabs);
+  });
+  ipcMain.on('updateActiveTab', (_, partialTab: Partial<Tab>) => {
+    const tabs = tabsStore.get('tabs').map((tab) => (tab.active ? { ...tab, ...partialTab } : tab));
     tabsStore.set('tabs', tabs);
   });
 };

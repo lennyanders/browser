@@ -15,7 +15,7 @@
     <webview
       v-for="(tab, index) of tabs"
       class="webpage__view"
-      src="https://lenny.fyi"
+      :src="tab.url"
       :hidden="!tab.active"
       @update-target-url.passive="setTargetUrl"
       @did-navigate.passive="(event: Event & { url: string }) => updateTab(index, { url: event.url })"

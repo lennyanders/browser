@@ -16,6 +16,7 @@ const tabs = {
   newTab: () => ipcRenderer.send('newTab'),
   setActiveTab: (index: number) => ipcRenderer.send('setActiveTab', index),
   deleteTab: (index: number) => ipcRenderer.send('deleteTab', index),
+  updateActiveTab: (partialTab: Partial<Tab>) => ipcRenderer.send('updateActiveTab', partialTab),
   updateTab: (index: number, partialTab: Partial<Tab>) => {
     ipcRenderer.send('updateTab', index, partialTab);
   },

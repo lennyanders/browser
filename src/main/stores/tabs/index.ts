@@ -6,6 +6,7 @@ export type Tab = {
   id: number;
   title: string;
   url: string;
+  faviconUrl?: string;
   active?: boolean;
   children?: Tab[];
 };
@@ -21,6 +22,7 @@ export const tabsStore = new Store({
         properties: {
           title: { type: 'string' },
           url: { type: 'string' },
+          faviconUrl: { type: 'string' },
           active: { type: 'boolean' },
           children: { type: 'array', $ref: '#' },
         },

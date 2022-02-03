@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { mdiVolumeOff, mdiClose } from '@mdi/js';
+  import { mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
   import { Tab } from '../../main/stores/tabs';
   import Icon from './Icon.vue';
 
@@ -15,7 +15,8 @@
     </button>
     <div class="tab__icons">
       <button type="button" class="tab__icon" aria-label="mute tab">
-        <img src="https://lenny.fyi/favicon.ico" alt="" />
+        <img v-if="tab.faviconUrl" :src="tab.faviconUrl" alt="" />
+        <Icon v-else :path="mdiFileOutline" />
         <Icon v-if="false" :path="mdiVolumeOff" size="s" class="tab__audio" />
       </button>
       <button

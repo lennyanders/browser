@@ -16,7 +16,7 @@
   <div class="tabs">
     <div class="tabs__inner" @dblclick.passive.self="newTab">
       <Draggable
-        :modelValue="tabs"
+        v-model="tabs"
         itemKey="id"
         tag="ol"
         class="tabs__list"

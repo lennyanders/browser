@@ -25,7 +25,11 @@ const tabs = {
   },
 };
 
-const browser = { windowActions, tabs };
+const views = {
+  getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url),
+};
+
+const browser = { windowActions, tabs, views };
 
 export type Browser = typeof browser;
 

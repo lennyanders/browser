@@ -3,6 +3,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 
 import { isDev } from './consts';
 import { Tab, tabsStore } from './stores/tabs';
+import { getUserAgentForUrl } from './utils/user-agent';
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -82,6 +83,10 @@ const createWindow = () => {
     const tabs = tabsStore.get('tabs');
     tabs.splice(newIndex, 0, tabs.splice(oldIndex, 1)[0]);
     tabsStore.set({ tabs });
+  });
+
+  ipcMain.on('getUserAgentForUrl', (event, url: string) => {
+    event.returnValue = getUserAgentForUrl(win.webContents.getUserAgent(), url);
   });
 };
 

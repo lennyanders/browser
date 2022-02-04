@@ -20,10 +20,10 @@ const createWindow = () => {
   });
 
   if (isDev) {
-    win.loadURL('http://localhost:9090/index.html');
+    win.loadURL('http://localhost:9090/app/index.html');
     win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    win.loadFile(join(__dirname, 'index.html'));
+    win.loadFile(join(__dirname, 'app/index.html'));
   }
 
   win.once('ready-to-show', () => win.show());

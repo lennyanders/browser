@@ -1,4 +1,5 @@
 import { rm, mkdir } from 'fs/promises';
+import glob from 'tiny-glob';
 import { build } from 'esbuild';
 import { build as viteBuild } from 'vite';
 import vue from '@vitejs/plugin-vue';
@@ -33,6 +34,7 @@ await build({
   outfile: 'dist/preload.js',
 });
 
+const htmlFiles = await glob('src/renderer/**/*.html', { absolute: true });
 await viteBuild({
   configFile: false,
   root: 'src/renderer',
@@ -47,6 +49,9 @@ await viteBuild({
     }),
   ],
   build: {
+    rollupOptions: {
+      input: htmlFiles.reduce((res, path, i) => ({ ...res, [i]: path }), {}),
+    },
     outDir: `${process.cwd()}/dist`,
   },
 });

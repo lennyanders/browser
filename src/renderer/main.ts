@@ -15,7 +15,7 @@ declare global {
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Temp: Electron.WebviewTag;
+    // Temp: Electron.WebviewTag;
 
     webview: {
       new (): {
@@ -30,6 +30,8 @@ declare module '@vue/runtime-core' {
           onDidNavigateInPage: (event: DidNavigateInPageEvent) => void;
           onPageTitleUpdated: (event: PageTitleUpdatedEvent) => void;
           onPageFaviconUpdated: (event: PageFaviconUpdatedEvent) => void;
+          onDidStartLoading: (event: Event) => void;
+          onDidStopLoading: (event: Event) => void;
         }>;
       };
     };

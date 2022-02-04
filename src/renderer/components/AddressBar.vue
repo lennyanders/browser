@@ -15,7 +15,7 @@
   import WindowControls from './WindowControls.vue';
 
   const activeTabUrl = computed({
-    get: () => tabs.value?.find((tab) => tab.active)?.url || '',
+    get: () => decodeURIComponent(tabs.value?.find((tab) => tab.active)?.url || ''),
     set: () => {},
   });
 

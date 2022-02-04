@@ -8,6 +8,7 @@ export type Tab = {
   url: string;
   faviconUrl?: string;
   active?: boolean;
+  loading?: boolean;
   children?: Tab[];
 };
 

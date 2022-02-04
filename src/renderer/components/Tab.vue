@@ -15,7 +15,10 @@
     </button>
     <div class="tab__icons">
       <button type="button" class="tab__icon" aria-label="mute tab">
-        <img v-if="tab.faviconUrl" :src="tab.faviconUrl" alt="" />
+        <svg v-if="tab.loading" class="tab__spinner" viewBox="0 0 50 50">
+          <circle fill="none" cx="25" cy="25" r="20" stroke="currentColor" stroke-width="5" />
+        </svg>
+        <img v-else-if="tab.faviconUrl" :src="tab.faviconUrl" alt="" />
         <Icon v-else :path="mdiFileOutline" />
         <Icon v-if="false" :path="mdiVolumeOff" size="s" class="tab__audio" />
       </button>
@@ -37,6 +40,27 @@
     syntax: 'color';
     inherits: false;
     initial-value: transparent;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
   }
 
   .tab {
@@ -114,6 +138,14 @@
       position: absolute;
       bottom: 0.25rem;
       right: 0.25rem;
+    }
+
+    &__spinner {
+      animation: rotate 2s linear infinite;
+
+      circle {
+        animation: dash 1.5s ease-in-out infinite;
+      }
     }
   }
 </style>

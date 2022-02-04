@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+  import type { UpdateTargetUrlEvent } from 'electron';
+  import type { Tab } from '../../main/stores/tabs';
   import { onMounted, ref, watch } from 'vue';
-  import { Tab } from '../../main/stores/tabs';
   import { targetUrl } from './Pages.vue';
 
   const props = defineProps<{ tab: Tab }>();
@@ -8,9 +9,9 @@
   const { updateTab } = window.browser.tabs;
   const { getUserAgentForUrl } = window.browser.views;
 
-  const setTargetUrl = (event: Event & { url: string }) => (targetUrl.value = event.url);
+  const setTargetUrl = (event: UpdateTargetUrlEvent) => (targetUrl.value = event.url);
 
-  const webview = ref<HTMLElement>();
+  const webview = ref<Electron.WebviewTag>();
 
   onMounted(() => {
     const view = webview.value!;
@@ -23,14 +24,9 @@
     watch(
       () => props.tab.url,
       (url) => {
-        // @ts-ignore
-        if (view.isLoading()) return;
-        // @ts-ignore
-        if (view.getURL() === url) return;
+        if (view.isLoading() || view.getURL() === url) return;
 
-        // @ts-ignore
         view.setUserAgent(getUserAgentForUrl(url));
-        // @ts-ignore
         view.loadURL(url);
       },
     );
@@ -46,11 +42,11 @@
     :src="tab.url"
     :hidden="!tab.active"
     class="page"
-    @update-target-url.passive="setTargetUrl"
-    @did-navigate.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
-    @did-navigate-in-page.passive="(event: Event & { url: string }) => updateTab(tab.id, { url: event.url })"
-    @page-title-updated.passive="(event: Event & { title: string }) => updateTab(tab.id, { title: event.title })"
-    @page-favicon-updated.passive="(event: Event & { favicons: string[] }) => updateTab(tab.id, { faviconUrl: event.favicons[0] })"
+    @updateTargetUrl.passive="setTargetUrl"
+    @didNavigate.passive="({ url }) => updateTab(tab.id, { url })"
+    @didNavigateInPage.passive="({ url }) => updateTab(tab.id, { url })"
+    @pageTitleUpdated.passive="({ title }) => updateTab(tab.id, { title })"
+    @pageFaviconUpdated.passive="({ favicons }) => updateTab(tab.id, { faviconUrl: favicons[0] })"
   ></webview>
 </template>
 

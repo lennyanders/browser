@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import type { PageFaviconUpdatedEvent } from 'electron';
   import type { Tab } from '../../../main/stores/tabs';
   import { onMounted, ref, watch } from 'vue';
   import { targetUrl } from './Pages.vue';
@@ -9,6 +10,13 @@
   const { getUserAgentForUrl } = window.browser.views;
 
   const webview = ref<Electron.WebviewTag>();
+
+  const updateFavicon = (url: string) => {
+    const image = new Image();
+    image.onload = () => updateTab(props.tab.id, { faviconUrl: url });
+    image.onerror = () => updateTab(props.tab.id, { faviconUrl: '' });
+    image.src = url;
+  };
 
   onMounted(() => {
     const view = webview.value!;
@@ -49,7 +57,7 @@
     @didNavigate.passive="updateTab(tab.id, { url: $event.url })"
     @didNavigateInPage.passive="$event.isMainFrame && updateTab(tab.id, { url: $event.url })"
     @pageTitleUpdated.passive="updateTab(tab.id, { title: $event.title })"
-    @pageFaviconUpdated.passive="updateTab(tab.id, { faviconUrl: $event.favicons[0] })"
+    @pageFaviconUpdated.passive="updateFavicon($event.favicons[0])"
     @didStartLoading.passive="updateTab(tab.id, { loading: true })"
     @didStopLoading.passive="updateTab(tab.id, { loading: false })"
   ></webview>

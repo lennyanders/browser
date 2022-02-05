@@ -26,7 +26,7 @@ const tabs = {
 };
 
 const views = {
-  getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url),
+  getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url) as string,
 };
 
 const browser = { windowActions, tabs, views };

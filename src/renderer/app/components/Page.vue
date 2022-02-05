@@ -15,7 +15,14 @@
 
     watch(
       () => props.tab.active,
-      (active) => (view.hidden = !active),
+      (active) => {
+        if (!view.src) {
+          view.useragent = getUserAgentForUrl(props.tab.url);
+          view.src = props.tab.url;
+        }
+
+        view.hidden = !active;
+      },
     );
 
     watch(
@@ -23,8 +30,7 @@
       (url) => {
         if (view.isLoading() || view.getURL() === url) return;
 
-        view.setUserAgent(getUserAgentForUrl(url));
-        view.loadURL(url);
+        view.loadURL(url, { userAgent: getUserAgentForUrl(url) });
       },
     );
   });
@@ -35,8 +41,8 @@
     v-once
     ref="webview"
     :key="tab.id"
-    :useragent="getUserAgentForUrl(tab.url)"
-    :src="tab.url"
+    :useragent="tab.active ? getUserAgentForUrl(tab.url) : undefined"
+    :src="tab.active ? tab.url : undefined"
     :hidden="!tab.active"
     class="page"
     @updateTargetUrl.passive="targetUrl = decodeURIComponent($event.url)"

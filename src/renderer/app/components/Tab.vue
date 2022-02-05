@@ -73,6 +73,7 @@
     background-color: var(--tab-bg);
     font-size: 0.875rem;
     transition: --tab-bg 0.2s ease, color 0.2s ease;
+    user-select: none;
 
     &:hover {
       color: var(--font-color-hover);

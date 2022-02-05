@@ -5,7 +5,7 @@ import type {
   PageTitleUpdatedEvent,
   UpdateTargetUrlEvent,
 } from 'electron';
-import type { Browser } from '../preload';
+import type { Browser } from '../../preload';
 
 declare global {
   interface Window {

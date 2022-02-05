@@ -1,6 +1,6 @@
-import Store from 'electron-store';
 import type { Schema } from 'electron-store';
-import { userDataPath } from '../../consts';
+import Store from 'electron-store';
+import { defaultNewTab, userDataPath } from '../../consts';
 
 export type Tab = {
   id: number;
@@ -28,18 +28,8 @@ export const tabsStore = new Store({
           children: { type: 'array', $ref: '#' },
         },
       },
-      default: [
-        {
-          id: 0,
-          title: 'New tab',
-          url: 'browser://newtab',
-          active: true,
-        },
-      ],
+      default: [{ ...defaultNewTab, id: 0 }],
     },
-    nextTabId: {
-      type: 'number',
-      default: 1,
-    },
+    nextTabId: { type: 'number', default: 1 },
   },
 });

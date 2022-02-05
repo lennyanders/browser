@@ -1,18 +1,20 @@
-import { join } from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 
-import { isDev } from './consts';
+import { cwd, defaultNewTab, isDev } from './consts';
 import { Tab, tabsStore } from './stores/tabs';
 import { getUserAgentForUrl } from './utils/user-agent';
+import { registerProtocol } from './protocol';
 
 const createWindow = () => {
+  if (!isDev) registerProtocol();
+
   const win = new BrowserWindow({
     width: 1280,
     height: 720,
     frame: false,
     show: false,
     webPreferences: {
-      preload: join(__dirname, 'preload.js'),
+      preload: `${cwd}/preload.js`,
       sandbox: true,
       contextIsolation: true,
       webviewTag: true,
@@ -23,7 +25,7 @@ const createWindow = () => {
     win.loadURL('http://localhost:9090/app/index.html');
     win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    win.loadFile(join(__dirname, 'app/index.html'));
+    win.loadFile(`${cwd}/app/index.html`);
   }
 
   win.once('ready-to-show', () => win.show());
@@ -47,13 +49,7 @@ const createWindow = () => {
   });
   ipcMain.on('newTab', () => {
     const tabs = tabsStore.store.tabs.map((tab) => ((tab.active = false), tab));
-    tabs.push({
-      title: 'New tab',
-      // url: 'browser://newtab',
-      url: 'https://lenny.fyi/',
-      active: true,
-      id: tabsStore.store.nextTabId,
-    });
+    tabs.push({ ...defaultNewTab, id: tabsStore.store.nextTabId });
     tabsStore.set({ tabs, nextTabId: tabsStore.store.nextTabId + 1 });
   });
   ipcMain.on('setActiveTab', (_, id: number) => {

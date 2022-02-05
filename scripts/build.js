@@ -4,6 +4,10 @@ import { build } from 'esbuild';
 import { build as viteBuild } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { build as electronBuild } from 'electron-builder';
+import { execSync } from 'child_process';
+import { join, dirname } from 'path';
+
+const args = process.argv.slice(2);
 
 /** @type {import('esbuild').BuildOptions} */
 const sharedBuildOptions = {
@@ -34,33 +38,32 @@ await build({
   outfile: 'dist/preload.js',
 });
 
-const htmlFiles = await glob('src/renderer/**/*.html', { absolute: true });
-await viteBuild({
-  configFile: false,
-  root: 'src/renderer',
-  base: './',
-  plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          isCustomElement: (tag) => tag === 'webview',
-        },
-      },
-    }),
-  ],
-  build: {
-    rollupOptions: {
-      input: htmlFiles.reduce((res, path, i) => ({ ...res, [i]: path }), {}),
-    },
-    outDir: `${process.cwd()}/dist`,
-  },
-});
+const cwd = process.cwd();
+const rendererPath = join(cwd, 'src', 'renderer');
+const htmlFiles = await glob('**/*.html', { cwd: rendererPath });
+for (const file of htmlFiles) {
+  const dir = dirname(file);
+  await viteBuild({
+    configFile: false,
+    root: join(rendererPath, dir),
+    base: './',
+    plugins: [
+      vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === 'webview' } } }),
+    ],
+    build: { assetsDir: '.', outDir: join(cwd, 'dist', dir) },
+  });
+}
 
-await electronBuild({
-  config: {
-    files: ['dist/**/*', 'build/**/*'],
-    directories: {
-      output: 'release',
+if (args.includes('--start')) {
+  execSync('cd dist && npx electron main.cjs', { stdio: 'inherit' });
+}
+if (args.includes('--release')) {
+  await electronBuild({
+    config: {
+      files: ['dist/**/*', 'build/**/*'],
+      directories: {
+        output: 'release',
+      },
     },
-  },
-});
+  });
+}

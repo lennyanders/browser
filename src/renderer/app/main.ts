@@ -1,6 +1,7 @@
 import type {
   DidNavigateEvent,
   DidNavigateInPageEvent,
+  NewWindowEvent,
   PageFaviconUpdatedEvent,
   PageTitleUpdatedEvent,
   UpdateTargetUrlEvent,
@@ -28,6 +29,7 @@ declare module '@vue/runtime-core' {
           onUpdateTargetUrl: (event: UpdateTargetUrlEvent) => void;
           onDidNavigate: (event: DidNavigateEvent) => void;
           onDidNavigateInPage: (event: DidNavigateInPageEvent) => void;
+          onNewWindow: (event: NewWindowEvent) => void;
           onPageTitleUpdated: (event: PageTitleUpdatedEvent) => void;
           onPageFaviconUpdated: (event: PageFaviconUpdatedEvent) => void;
           onDidStartLoading: (event: Event) => void;

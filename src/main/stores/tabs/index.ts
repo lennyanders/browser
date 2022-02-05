@@ -10,6 +10,7 @@ export type Tab = {
   faviconUrl?: string;
   active?: boolean;
   loading?: boolean;
+  loadInBackground?: boolean;
   children?: Tab[];
 };
 

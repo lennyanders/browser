@@ -53,6 +53,18 @@ const createWindow = () => {
     tabs.push({ ...defaultNewTab, id: tabsStore.store.nextTabId });
     tabsStore.set({ tabs, nextTabId: tabsStore.store.nextTabId + 1 });
   });
+  ipcMain.on('createTab', (_, partialTab: Pick<Tab, 'url' | 'active'>) => {
+    const tabs = partialTab.active
+      ? tabsStore.store.tabs.map((tab) => ((tab.active = false), tab))
+      : tabsStore.store.tabs;
+    tabs.push({
+      ...partialTab,
+      title: partialTab.url,
+      loadInBackground: true,
+      id: tabsStore.store.nextTabId,
+    });
+    tabsStore.set({ tabs, nextTabId: tabsStore.store.nextTabId + 1 });
+  });
   ipcMain.on('setActiveTab', (_, id: number) => {
     const tabs = tabsStore.store.tabs.map<Tab>((tab) => ({ ...tab, active: tab.id === id }));
     tabsStore.set({ tabs });
@@ -67,12 +79,14 @@ const createWindow = () => {
     tabsStore.set({ tabs });
   });
   ipcMain.on('updateActiveTab', (_, partialTab: Partial<Tab>) => {
-    const tabs = tabsStore.get('tabs').map((tab) => (tab.active ? { ...tab, ...partialTab } : tab));
+    const tabs = tabsStore.get('tabs').map((tab) => {
+      return tab.active ? { ...tab, ...partialTab, loadInBackground: undefined } : tab;
+    });
     tabsStore.set({ tabs });
   });
   ipcMain.on('updateTab', (_, id: number, partialTab: Partial<Tab>) => {
     const tabs = tabsStore.store.tabs.map((tab) => {
-      return tab.id === id ? { ...tab, ...partialTab } : tab;
+      return tab.id === id ? { ...tab, ...partialTab, loadInBackground: undefined } : tab;
     });
     tabsStore.set({ tabs });
   });

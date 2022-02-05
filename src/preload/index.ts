@@ -14,6 +14,7 @@ const windowActions = {
 const tabs = {
   getAll: get<Tab[]>('getTabs', 'tabsChanged'),
   newTab: () => ipcRenderer.send('newTab'),
+  createTab: (partialTab: Pick<Tab, 'url' | 'active'>) => ipcRenderer.send('createTab', partialTab),
   setActiveTab: (id: number) => ipcRenderer.send('setActiveTab', id),
   deleteTab: (id: number) => ipcRenderer.send('deleteTab', id),
   updateActiveTab: (partialTab: Partial<Tab>) => ipcRenderer.send('updateActiveTab', partialTab),

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-  import type { PageFaviconUpdatedEvent } from 'electron';
+  import type { NewWindowEvent } from 'electron';
   import type { Tab } from '../../../main/stores/tabs';
   import { onMounted, ref, watch } from 'vue';
   import { targetUrl } from './Pages.vue';
 
   const props = defineProps<{ tab: Tab }>();
 
-  const { updateTab } = window.browser.tabs;
+  const { updateTab, createTab } = window.browser.tabs;
   const { getUserAgentForUrl } = window.browser.views;
 
   const webview = ref<Electron.WebviewTag>();
@@ -16,6 +16,11 @@
     image.onload = () => updateTab(props.tab.id, { faviconUrl: url });
     image.onerror = () => updateTab(props.tab.id, { faviconUrl: '' });
     image.src = url;
+  };
+
+  const handleNewWindow = (event: NewWindowEvent) => {
+    if (event.disposition === 'background-tab') return createTab({ url: event.url });
+    if (event.disposition === 'foreground-tab') return createTab({ url: event.url, active: true });
   };
 
   onMounted(() => {
@@ -49,13 +54,14 @@
     v-once
     ref="webview"
     :key="tab.id"
-    :useragent="tab.active ? getUserAgentForUrl(tab.url) : undefined"
-    :src="tab.active ? tab.url : undefined"
+    :useragent="tab.active || tab.loadInBackground ? getUserAgentForUrl(tab.url) : undefined"
+    :src="tab.active || tab.loadInBackground ? tab.url : undefined"
     :hidden="!tab.active"
     class="page"
     @updateTargetUrl.passive="targetUrl = decodeURIComponent($event.url)"
     @didNavigate.passive="updateTab(tab.id, { url: $event.url })"
     @didNavigateInPage.passive="$event.isMainFrame && updateTab(tab.id, { url: $event.url })"
+    @newWindow.passive="handleNewWindow"
     @pageTitleUpdated.passive="updateTab(tab.id, { title: $event.title })"
     @pageFaviconUpdated.passive="updateFavicon($event.favicons[0])"
     @didStartLoading.passive="updateTab(tab.id, { loading: true })"

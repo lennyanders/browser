@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-  import type { UpdateTargetUrlEvent } from 'electron';
-  import type { Tab } from '../../main/stores/tabs';
+  import type { Tab } from '../../../main/stores/tabs';
   import { onMounted, ref, watch } from 'vue';
   import { targetUrl } from './Pages.vue';
 

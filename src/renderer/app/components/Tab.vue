@@ -1,6 +1,6 @@
 <script setup lang="ts">
+  import type { Tab } from '../../../main/stores/tabs';
   import { mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
-  import { Tab } from '../../main/stores/tabs';
   import Icon from './Icon.vue';
 
   defineProps<{ tab: Tab }>();

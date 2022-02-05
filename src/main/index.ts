@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 
-import { cwd, defaultNewTab, isDev } from './consts';
+import { cwd } from './consts';
+import { defaultNewTab, isDev } from '../shared/consts';
 import { Tab, tabsStore } from './stores/tabs';
 import { getUserAgentForUrl } from './utils/user-agent';
 import { registerProtocol } from './protocol';

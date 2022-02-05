@@ -10,12 +10,18 @@
     mdiPuzzleOutline,
   } from '@mdi/js';
   import { computed, ref } from 'vue';
+  import { defaultNewTab } from '../../../shared/consts';
   import { tabs } from '../stores/tabs';
   import Icon from './Icon.vue';
   import WindowControls from './WindowControls.vue';
 
   const activeTabUrl = computed({
-    get: () => decodeURIComponent(tabs.value?.find((tab) => tab.active)?.url || ''),
+    get: () => {
+      const activeTabUrl = tabs.value?.find((tab) => tab.active)?.url;
+      if (!activeTabUrl || activeTabUrl === defaultNewTab.url) return '';
+
+      return decodeURIComponent(activeTabUrl);
+    },
     set: () => {},
   });
 

@@ -1,6 +1,7 @@
 import type { Schema } from 'electron-store';
 import Store from 'electron-store';
-import { defaultNewTab, userDataPath } from '../../consts';
+import { defaultNewTab } from '../../../shared/consts';
+import { userDataPath } from '../../consts';
 
 export type Tab = {
   id: number;

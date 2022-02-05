@@ -17,7 +17,7 @@ const sharedBuildOptions = {
   platform: 'node',
   format: 'cjs',
   external: ['electron'],
-  define: { 'process.env.NODE_ENV': JSON.stringify('production') },
+  define: { 'import.meta.env.DEV': false },
 };
 
 try {

@@ -13,7 +13,7 @@ const sharedBuildOptions = {
   external: ['electron', 'sharp'],
   sourcemap: 'inline',
   logLevel: 'info',
-  define: { 'process.env.NODE_ENV': JSON.stringify('development') },
+  define: { 'import.meta.env.DEV': true },
 };
 
 try {

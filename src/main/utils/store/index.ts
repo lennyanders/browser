@@ -2,6 +2,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'fs';
 import { dirname } from 'path';
 import { createState } from '../state';
 import { debounce } from '../debounce';
+import { isDev } from '../../../shared/consts';
 
 interface StoreOptions<T> {
   defaultValue: T;
@@ -18,7 +19,7 @@ export const createStore = <T>(
     deserialize = JSON.parse,
     afterDeserialize,
     beforeSerialize,
-    serialize = JSON.stringify,
+    serialize = isDev ? (value) => JSON.stringify(value, null, 2) : JSON.stringify,
   }: StoreOptions<T>,
 ) => {
   let value: T;

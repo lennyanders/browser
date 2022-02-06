@@ -1,4 +1,5 @@
 import type {
+  ContextMenuEvent,
   DidNavigateEvent,
   DidNavigateInPageEvent,
   NewWindowEvent,
@@ -34,6 +35,7 @@ declare module '@vue/runtime-core' {
           onPageFaviconUpdated: (event: PageFaviconUpdatedEvent) => void;
           onDidStartLoading: (event: Event) => void;
           onDidStopLoading: (event: Event) => void;
+          onContextMenu: (event: ContextMenuEvent) => void;
         }>;
       };
     };

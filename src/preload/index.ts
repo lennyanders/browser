@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ContextMenuEvent, ipcRenderer } from 'electron';
 import { Tab } from '../main/stores/tabs';
 import { get } from './utils';
 
@@ -7,7 +7,6 @@ const windowActions = {
   maximize: () => ipcRenderer.send('maximize'),
   unmaximize: () => ipcRenderer.send('unmaximize'),
   close: () => ipcRenderer.send('close'),
-  // showContextMenu: (menu: MenuKey) => ipcRenderer.send('showContextMenu', menu),
   getMaximizedState: get<boolean>('getMaximizedState', 'maximizedStateChanged'),
 };
 
@@ -26,11 +25,14 @@ const tabs = {
   },
 };
 
-const views = {
+const page = {
   getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url) as string,
+  showContextMenu: (params: ContextMenuEvent['params']) => {
+    ipcRenderer.send('showPageContextMenu', params);
+  },
 };
 
-const browser = { windowActions, tabs, views };
+const browser = { windowActions, tabs, page };
 
 export type Browser = typeof browser;
 

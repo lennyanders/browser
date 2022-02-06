@@ -5,6 +5,7 @@ import { defaultNewTab, isDev } from '../shared/consts';
 import { Tab, tabsStore } from './stores/tabs';
 import { getUserAgentForUrl } from './utils/user-agent';
 import { registerProtocol } from './protocol';
+import { handleContextMenus } from './contextMenus';
 
 const createWindow = () => {
   if (!isDev) registerProtocol();
@@ -93,6 +94,8 @@ const createWindow = () => {
   ipcMain.on('getUserAgentForUrl', (event, url: string) => {
     event.returnValue = getUserAgentForUrl(win.webContents.getUserAgent(), url);
   });
+
+  handleContextMenus();
 };
 
 app.whenReady().then(() => {

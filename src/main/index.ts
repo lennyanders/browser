@@ -45,55 +45,49 @@ const createWindow = () => {
   });
 
   ipcMain.on('getTabs', (event) => {
-    tabsStore.onDidChange('tabs', (newValue) => event.sender.send('tabsChanged', newValue));
-    event.returnValue = tabsStore.get('tabs');
+    tabsStore.on(({ tabs }) => event.sender.send('tabsChanged', tabs));
+    event.returnValue = tabsStore().tabs;
   });
   ipcMain.on('newTab', () => {
-    const tabs = tabsStore.store.tabs.map((tab) => ((tab.active = false), tab));
-    tabs.push({ ...defaultNewTab, id: tabsStore.store.nextTabId });
-    tabsStore.set({ tabs, nextTabId: tabsStore.store.nextTabId + 1 });
+    let { tabs, nextTabId } = tabsStore();
+    tabs.forEach((tab) => (tab.active = false));
+    tabs.push({ ...defaultNewTab, id: nextTabId++ });
+    tabsStore({ tabs, nextTabId });
   });
   ipcMain.on('createTab', (_, partialTab: Pick<Tab, 'url' | 'active'>) => {
-    const tabs = partialTab.active
-      ? tabsStore.store.tabs.map((tab) => ((tab.active = false), tab))
-      : tabsStore.store.tabs;
-    tabs.push({
-      ...partialTab,
-      title: partialTab.url,
-      loadInBackground: true,
-      id: tabsStore.store.nextTabId,
-    });
-    tabsStore.set({ tabs, nextTabId: tabsStore.store.nextTabId + 1 });
+    let { tabs, nextTabId } = tabsStore();
+    if (partialTab.active) tabs.forEach((tab) => (tab.active = false));
+    tabs.push({ ...partialTab, title: partialTab.url, loadInBackground: true, id: nextTabId++ });
+    tabsStore({ tabs, nextTabId });
   });
   ipcMain.on('setActiveTab', (_, id: number) => {
-    const tabs = tabsStore.store.tabs.map<Tab>((tab) => ({ ...tab, active: tab.id === id }));
-    tabsStore.set({ tabs });
+    const { tabs } = tabsStore();
+    tabs.forEach((tab) => (tab.active = tab.id === id));
+    tabsStore({ tabs });
   });
   ipcMain.on('deleteTab', (_, id: number) => {
-    const tabs = tabsStore.get('tabs');
+    const { tabs } = tabsStore();
     if (tabs.length === 1) app.quit();
 
     const tabIndex = tabs.findIndex((tab) => tab.id === id);
     if (tabs[tabIndex].active) (tabs[tabIndex + 1] || tabs[tabIndex - 1]).active = true;
     tabs.splice(tabIndex, 1);
-    tabsStore.set({ tabs });
+    tabsStore({ tabs });
   });
   ipcMain.on('updateActiveTab', (_, partialTab: Partial<Tab>) => {
-    const tabs = tabsStore.get('tabs').map((tab) => {
-      return tab.active ? { ...tab, ...partialTab, loadInBackground: undefined } : tab;
-    });
-    tabsStore.set({ tabs });
+    const { tabs } = tabsStore();
+    tabs.forEach((tab) => tab.active && Object.assign(tab, partialTab));
+    tabsStore({ tabs });
   });
   ipcMain.on('updateTab', (_, id: number, partialTab: Partial<Tab>) => {
-    const tabs = tabsStore.store.tabs.map((tab) => {
-      return tab.id === id ? { ...tab, ...partialTab, loadInBackground: undefined } : tab;
-    });
-    tabsStore.set({ tabs });
+    const { tabs } = tabsStore();
+    tabs.forEach((tab) => tab.id === id && Object.assign(tab, partialTab));
+    tabsStore({ tabs });
   });
   ipcMain.on('updateTabPosition', (_, oldIndex: number, newIndex: number) => {
-    const tabs = tabsStore.get('tabs');
+    const { tabs } = tabsStore();
     tabs.splice(newIndex, 0, tabs.splice(oldIndex, 1)[0]);
-    tabsStore.set({ tabs });
+    tabsStore({ tabs });
   });
 
   ipcMain.on('getUserAgentForUrl', (event, url: string) => {

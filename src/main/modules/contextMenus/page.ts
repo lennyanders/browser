@@ -1,5 +1,5 @@
 import { ContextMenuEvent, ipcMain, Menu, clipboard } from 'electron';
-import { getUrl } from '../utils/url';
+import { getUrl } from '../../utils/url';
 
 const showMenu = (params: ContextMenuEvent['params']) => {
   console.log(params);

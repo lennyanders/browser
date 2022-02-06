@@ -1,5 +1,5 @@
 import { handlePageContextMenu } from './page';
 
-export const handleContextMenus = () => {
+export const useContextMenus = () => {
   handlePageContextMenu();
 };

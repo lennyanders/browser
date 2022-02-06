@@ -2,6 +2,7 @@ import { join } from 'path';
 import { defaultNewTab } from '../../../shared/consts';
 import { userDataPath } from '../../consts';
 import { createStore } from '../../utils/store';
+import { handleTabEvents } from './events';
 
 export type Tab = {
   id: number;
@@ -35,3 +36,7 @@ export const tabsStore = createStore<TabsStore>(join(userDataPath, 'tabs.json'),
     return value;
   },
 });
+
+export const useTabs = () => {
+  handleTabEvents();
+};

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import type { NewWindowEvent } from 'electron';
-  import type { Tab } from '../../../main/stores/tabs';
+  import type { Tab } from '../../../main/modules/tabs';
   import { onMounted, ref, watch } from 'vue';
   import { targetUrl } from './Pages.vue';
 

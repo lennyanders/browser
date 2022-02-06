@@ -1,4 +1,4 @@
-import type { Tab } from '../main/stores/tabs';
+import type { Tab } from '../main/modules/tabs';
 
 export const isDev = import.meta.env.DEV;
 

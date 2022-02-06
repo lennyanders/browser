@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { Tab } from '../../../main/stores/tabs';
+  import type { Tab } from '../../../main/modules/tabs';
   import { mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
   import Icon from './Icon.vue';
 

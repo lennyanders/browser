@@ -1,5 +1,5 @@
 import { contextBridge, ContextMenuEvent, ipcRenderer } from 'electron';
-import { Tab } from '../main/stores/tabs';
+import { Tab } from '../main/modules/tabs';
 import { get } from './utils';
 
 const windowActions = {

@@ -1,20 +1,46 @@
-type Callback<T> = (newValue: T) => void;
+import { readFileSync, mkdirSync, writeFileSync } from 'fs';
+import { dirname } from 'path';
+import { createState } from '../state';
+import { debounce } from '../debounce';
 
-export const createStore = <T>(value: T) => {
-  const callbacks: Callback<T>[] = [];
+interface StoreOptions<T> {
+  defaultValue: T;
+  deserialize?: (value: string) => T;
+  afterDeserialize?: (value: T) => T;
+  beforeSerialize?: (value: T) => T;
+  serialize?: (value: T) => string;
+}
 
-  const getterSetter = (newValue?: Partial<T>) => {
-    if (typeof newValue === 'undefined') return value;
+export const createStore = <T>(
+  filePath: string,
+  {
+    defaultValue,
+    deserialize = JSON.parse,
+    afterDeserialize,
+    beforeSerialize,
+    serialize = JSON.stringify,
+  }: StoreOptions<T>,
+) => {
+  let value: T;
+  try {
+    value = deserialize(readFileSync(filePath, { encoding: 'utf-8' }));
+    if (afterDeserialize) value = afterDeserialize(value);
+  } catch (_) {
+    value = defaultValue;
+  }
 
-    value = Object.assign(value, newValue);
-    callbacks.forEach((callback) => callback(value));
-    return value;
-  };
+  const state = createState(value);
 
-  getterSetter.on = (callback: Callback<T>) => {
-    const callbackIndex = callbacks.push(callback);
-    return () => callbacks.splice(callbackIndex, 1) as never as void;
-  };
+  state.on(
+    debounce((value) => {
+      let clone: T = beforeSerialize ? JSON.parse(JSON.stringify(value)) : value;
+      if (beforeSerialize) clone = beforeSerialize(clone);
+      try {
+        mkdirSync(dirname(filePath), { recursive: true });
+      } catch (_) {}
+      writeFileSync(filePath, serialize(clone), { encoding: 'utf-8' });
+    }, 2500),
+  );
 
-  return getterSetter;
+  return state;
 };

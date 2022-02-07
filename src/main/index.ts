@@ -31,6 +31,7 @@ const createWindow = () => {
     win.loadFile(join(cwd, 'app', 'index.html'));
   }
 
+  win.setMenu(null);
   win.once('ready-to-show', () => win.show());
 
   ipcMain.on('getPagePreloadPath', (event) => {

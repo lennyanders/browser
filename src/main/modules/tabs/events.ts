@@ -39,11 +39,11 @@ export const handleTabEvents = () => {
     tabs.forEach((tab, index) => (tab.active = index === newActiveTabIndex));
     tabsStore({ tabs });
   });
-  ipcMain.on('deleteTab', (_, id: number) => {
+  ipcMain.on('deleteTab', (_, id?: number) => {
     const { tabs } = tabsStore();
     if (tabs.length === 1) app.quit();
 
-    const tabIndex = tabs.findIndex((tab) => tab.id === id);
+    const tabIndex = tabs.findIndex(id ? (tab) => tab.id === id : (tab) => tab.active);
     if (tabs[tabIndex].active) (tabs[tabIndex + 1] || tabs[tabIndex - 1]).active = true;
     tabs.splice(tabIndex, 1);
     tabsStore({ tabs });

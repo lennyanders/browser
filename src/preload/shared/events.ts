@@ -5,6 +5,8 @@ addEventListener(
   (event) => {
     if (event.ctrlKey && event.key === 't') return ipcRenderer.send('newTab');
 
+    if (event.ctrlKey && event.key === 'w') return ipcRenderer.send('deleteTab');
+
     if (event.ctrlKey && event.key === 'Tab') {
       return ipcRenderer.send('setActiveTabByOffset', event.shiftKey ? -1 : 1);
     }

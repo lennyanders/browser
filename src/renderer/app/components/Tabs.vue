@@ -86,6 +86,7 @@
 
     &__inner {
       float: right;
+      position: relative;
       width: 20rem;
       height: 100%;
       background-color: var(--bg-color);

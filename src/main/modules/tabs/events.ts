@@ -30,6 +30,17 @@ export const handleTabEvents = () => {
     tabs.forEach((tab) => (tab.active = tab.id === id));
     tabsStore({ tabs });
   });
+  ipcMain.on('setLastTabActive', () => {
+    const { tabs } = tabsStore();
+    tabs.forEach((tab, index) => (tab.active = index === tabs.length - 1));
+    tabsStore({ tabs });
+  });
+  ipcMain.on('setActiveTabByIndex', (_, index: number) => {
+    const { tabs } = tabsStore();
+    if (index > tabs.length - 1) return;
+    tabs.forEach((tab, i) => (tab.active = i === index));
+    tabsStore({ tabs });
+  });
   ipcMain.on('setActiveTabByOffset', (_, offset: number) => {
     const { tabs } = tabsStore();
     const activeTabIndex = tabs.findIndex((tab) => tab.active);

@@ -16,7 +16,13 @@ export const handleTabEvents = () => {
   ipcMain.on('createTab', (_, partialTab: Pick<Tab, 'url' | 'active'>) => {
     let { tabs, nextTabId } = tabsStore();
     if (partialTab.active) tabs.forEach((tab) => (tab.active = false));
-    tabs.push({ ...partialTab, title: partialTab.url, loadInBackground: true, id: nextTabId++ });
+    const activeTabIndex = tabs.findIndex((tab) => tab.active);
+    tabs.splice(activeTabIndex + 1, 0, {
+      ...partialTab,
+      title: partialTab.url,
+      loadInBackground: true,
+      id: nextTabId++,
+    });
     tabsStore({ tabs, nextTabId });
   });
   ipcMain.on('setActiveTab', (_, id: number) => {

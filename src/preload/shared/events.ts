@@ -8,14 +8,14 @@ addEventListener(
 
       if (event.key === 'w') return ipcRenderer.send('deleteTab');
 
-      if (event.key === '9') return ipcRenderer.send('setLastTabActive');
+      if (event.key === '9') return ipcRenderer.send('setActiveTab', { last: true });
 
       if ('12345678'.includes(event.key)) {
-        return ipcRenderer.send('setActiveTabByIndex', +event.key - 1);
+        return ipcRenderer.send('setActiveTab', { index: +event.key - 1 });
       }
 
       if (event.key === 'Tab') {
-        return ipcRenderer.send('setActiveTabByOffset', event.shiftKey ? -1 : 1);
+        return ipcRenderer.send('setActiveTab', { offset: event.shiftKey ? -1 : 1 });
       }
 
       if (event.shiftKey) {

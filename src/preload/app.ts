@@ -1,5 +1,6 @@
 import { contextBridge, ContextMenuEvent, ipcRenderer } from 'electron';
 import { Tab } from '../main/modules/tabs';
+import { SetActiveTabOptions } from '../main/modules/tabs/events';
 import { get } from './utils';
 import './shared/events';
 
@@ -15,7 +16,7 @@ const tabs = {
   getAll: get<Tab[]>('getTabs', 'tabsChanged'),
   newTab: () => ipcRenderer.send('newTab'),
   createTab: (partialTab: Pick<Tab, 'url' | 'active'>) => ipcRenderer.send('createTab', partialTab),
-  setActiveTab: (id: number) => ipcRenderer.send('setActiveTab', id),
+  setActiveTab: (options: SetActiveTabOptions) => ipcRenderer.send('setActiveTab', options),
   deleteTab: (id: number) => ipcRenderer.send('deleteTab', id),
   updateActiveTab: (partialTab: Partial<Tab>) => ipcRenderer.send('updateActiveTab', partialTab),
   updateTab: (id: number, partialTab: Partial<Tab>) => {

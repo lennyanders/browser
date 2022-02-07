@@ -1,6 +1,10 @@
 import { app, ipcMain } from 'electron';
 import { Tab, tabsStore } from '.';
 import { defaultNewTab } from '../../../shared/consts';
+import { isNumber } from '../../utils/types';
+import { setActiveTab } from './utils';
+
+export type SetActiveTabOptions = { id?: number; index?: number; offset?: number; last?: boolean };
 
 export const handleTabEvents = () => {
   ipcMain.on('getTabs', (event) => {
@@ -25,30 +29,14 @@ export const handleTabEvents = () => {
     });
     tabsStore({ tabs, nextTabId });
   });
-  ipcMain.on('setActiveTab', (_, id: number) => {
+
+  ipcMain.on('setActiveTab', (_, { id, index, offset, last }: SetActiveTabOptions) => {
     const { tabs } = tabsStore();
-    tabs.forEach((tab) => (tab.active = tab.id === id));
-    tabsStore({ tabs });
-  });
-  ipcMain.on('setLastTabActive', () => {
-    const { tabs } = tabsStore();
-    tabs.forEach((tab, index) => (tab.active = index === tabs.length - 1));
-    tabsStore({ tabs });
-  });
-  ipcMain.on('setActiveTabByIndex', (_, index: number) => {
-    const { tabs } = tabsStore();
-    if (index > tabs.length - 1) return;
-    tabs.forEach((tab, i) => (tab.active = i === index));
-    tabsStore({ tabs });
-  });
-  ipcMain.on('setActiveTabByOffset', (_, offset: number) => {
-    const { tabs } = tabsStore();
-    const activeTabIndex = tabs.findIndex((tab) => tab.active);
-    let newActiveTabIndex = activeTabIndex + offset;
-    if (newActiveTabIndex > tabs.length - 1) newActiveTabIndex = 0;
-    else if (newActiveTabIndex < 0) newActiveTabIndex = tabs.length - 1;
-    tabs.forEach((tab, index) => (tab.active = index === newActiveTabIndex));
-    tabsStore({ tabs });
+    const _setActiveTab = setActiveTab.bind(null, tabs);
+    if (last) return _setActiveTab(tabs.length - 1);
+    if (isNumber(index)) return _setActiveTab(index!);
+    if (isNumber(id)) return _setActiveTab(tabs.findIndex((tab) => tab.id === id));
+    if (isNumber(offset)) return _setActiveTab(tabs.findIndex((tab) => tab.active) + offset!, true);
   });
   ipcMain.on('deleteTab', (_, id?: number) => {
     const { tabs } = tabsStore();

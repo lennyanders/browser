@@ -10,7 +10,7 @@
 
 <template>
   <li class="tab" :class="{ 'tab--active': tab.active }" @click.passive.middle="deleteTab(tab.id)">
-    <button type="button" class="tab__title" @click.passive="setActiveTab(tab.id)">
+    <button type="button" class="tab__title" @click.passive="setActiveTab({ id: tab.id })">
       {{ tab.title }}
     </button>
     <div class="tab__icons">

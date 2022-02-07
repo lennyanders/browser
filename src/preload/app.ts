@@ -1,6 +1,7 @@
 import { contextBridge, ContextMenuEvent, ipcRenderer } from 'electron';
 import { Tab } from '../main/modules/tabs';
 import { get } from './utils';
+import './shared/events';
 
 const windowActions = {
   minimize: () => ipcRenderer.send('minimize'),

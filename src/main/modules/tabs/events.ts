@@ -30,6 +30,15 @@ export const handleTabEvents = () => {
     tabs.forEach((tab) => (tab.active = tab.id === id));
     tabsStore({ tabs });
   });
+  ipcMain.on('setActiveTabByOffset', (_, offset: number) => {
+    const { tabs } = tabsStore();
+    const activeTabIndex = tabs.findIndex((tab) => tab.active);
+    let newActiveTabIndex = activeTabIndex + offset;
+    if (newActiveTabIndex > tabs.length - 1) newActiveTabIndex = 0;
+    else if (newActiveTabIndex < 0) newActiveTabIndex = tabs.length - 1;
+    tabs.forEach((tab, index) => (tab.active = index === newActiveTabIndex));
+    tabsStore({ tabs });
+  });
   ipcMain.on('deleteTab', (_, id: number) => {
     const { tabs } = tabsStore();
     if (tabs.length === 1) app.quit();

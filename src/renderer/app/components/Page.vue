@@ -7,7 +7,7 @@
   const props = defineProps<{ tab: Tab }>();
 
   const { updateTab, createTab } = window.browser.tabs;
-  const { getUserAgentForUrl, showContextMenu } = window.browser.page;
+  const { preloadPath, getUserAgentForUrl, showContextMenu } = window.browser.page;
 
   const webview = ref<Electron.WebviewTag>();
 
@@ -54,6 +54,9 @@
     v-once
     ref="webview"
     :key="tab.id"
+    :preload="preloadPath"
+    :nodeIntegration="false"
+    :contextIsolation="true"
     :useragent="tab.active || tab.loadInBackground ? getUserAgentForUrl(tab.url) : undefined"
     :src="tab.active || tab.loadInBackground ? tab.url : undefined"
     :hidden="!tab.active"

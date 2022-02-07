@@ -26,6 +26,7 @@ const tabs = {
 };
 
 const page = {
+  preloadPath: ipcRenderer.sendSync('getPagePreloadPath'),
   getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url) as string,
   showContextMenu: (params: ContextMenuEvent['params']) => {
     ipcRenderer.send('showPageContextMenu', params);

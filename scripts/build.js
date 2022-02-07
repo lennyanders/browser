@@ -1,6 +1,6 @@
 import { rm, mkdir } from 'fs/promises';
-import glob from 'tiny-glob';
 import { build } from 'esbuild';
+import glob from 'tiny-glob';
 import { build as viteBuild } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { build as electronBuild } from 'electron-builder';
@@ -34,8 +34,8 @@ await build({
 
 await build({
   ...sharedBuildOptions,
-  entryPoints: ['src/preload/index.ts'],
-  outfile: 'dist/preload.js',
+  entryPoints: await glob('src/preload/*.ts'),
+  outdir: 'dist/preloads',
 });
 
 const cwd = process.cwd();

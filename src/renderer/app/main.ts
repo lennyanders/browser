@@ -7,7 +7,7 @@ import type {
   PageTitleUpdatedEvent,
   UpdateTargetUrlEvent,
 } from 'electron';
-import type { Browser } from '../../preload';
+import type { Browser } from '../../preload/app';
 
 declare global {
   interface Window {
@@ -27,6 +27,8 @@ declare module '@vue/runtime-core' {
           preload: string;
           src: string;
           useragent: string;
+          nodeIntegration: boolean;
+          contextIsolation: boolean;
           onUpdateTargetUrl: (event: UpdateTargetUrlEvent) => void;
           onDidNavigate: (event: DidNavigateEvent) => void;
           onDidNavigateInPage: (event: DidNavigateInPageEvent) => void;
@@ -44,6 +46,9 @@ declare module '@vue/runtime-core' {
 
 import './global.scss';
 import { createApp } from 'vue';
+import { reloadActiveTab } from './utils';
 import App from './App.vue';
 
 createApp(App).mount(document.body);
+
+addEventListener('keyup', (event) => event.key === 'F5' && reloadActiveTab(), { passive: true });

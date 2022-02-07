@@ -1,5 +1,6 @@
 import { rm, mkdir } from 'fs/promises';
 import { build } from 'esbuild';
+import glob from 'tiny-glob';
 import { createServer } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import electronmon from 'electronmon';
@@ -31,8 +32,8 @@ await build({
 
 await build({
   ...sharedBuildOptions,
-  entryPoints: ['src/preload/index.ts'],
-  outfile: 'dist/preload.js',
+  entryPoints: await glob('src/preload/*.ts'),
+  outdir: 'dist/preloads',
   watch: { onRebuild: () => app?.reload() },
 });
 

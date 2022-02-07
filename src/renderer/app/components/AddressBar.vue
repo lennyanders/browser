@@ -12,6 +12,7 @@
   import { computed, ref } from 'vue';
   import { defaultNewTab } from '../../../shared/consts';
   import { tabs } from '../stores/tabs';
+  import { reloadActiveTab } from '../utils';
   import Icon from './Icon.vue';
   import WindowControls from './WindowControls.vue';
 
@@ -28,6 +29,8 @@
   let urlInputFocused = ref(false);
   const urlInput = ref<HTMLInputElement>();
   const updateActiveTab = () => {
+    if (urlInput.value?.value === activeTabUrl.value) return reloadActiveTab();
+
     window.browser.tabs.updateActiveTab({ url: urlInput.value?.value });
   };
 
@@ -51,7 +54,7 @@
     <button class="address-bar__button" aria-label="forwards in hsitory">
       <Icon :path="mdiArrowRight" size="l" />
     </button>
-    <button class="address-bar__button" aria-label="reload page">
+    <button class="address-bar__button" aria-label="reload page" @click.passive="reloadActiveTab">
       <Icon :path="mdiReload" size="l" />
     </button>
     <form class="url-bar" @submit.prevent="updateActiveTab">

@@ -1,5 +1,5 @@
-import { app, BrowserWindow } from 'electron';
-
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { join } from 'path';
 import { cwd } from './consts';
 import { isDev } from '../shared/consts';
 import { registerProtocol } from './protocol';
@@ -17,7 +17,7 @@ const createWindow = () => {
     frame: false,
     show: false,
     webPreferences: {
-      preload: `${cwd}/preload.js`,
+      preload: join(cwd, 'preloads', 'app.js'),
       sandbox: true,
       contextIsolation: true,
       webviewTag: true,
@@ -28,10 +28,14 @@ const createWindow = () => {
     win.loadURL('http://localhost:9090/app/index.html');
     win.webContents.openDevTools({ mode: 'detach' });
   } else {
-    win.loadFile(`${cwd}/app/index.html`);
+    win.loadFile(join(cwd, 'app', 'index.html'));
   }
 
   win.once('ready-to-show', () => win.show());
+
+  ipcMain.on('getPagePreloadPath', (event) => {
+    event.returnValue = join(cwd, 'preloads', 'page.js');
+  });
 
   useWindowActions(win);
   useTabs();

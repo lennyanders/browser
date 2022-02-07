@@ -17,6 +17,11 @@ addEventListener(
       if (event.key === 'Tab') {
         return ipcRenderer.send('setActiveTabByOffset', event.shiftKey ? -1 : 1);
       }
+
+      if (event.shiftKey) {
+        if (event.key === 'ArrowUp') return ipcRenderer.send('updateActiveTabPosition', -1);
+        if (event.key === 'ArrowDown') return ipcRenderer.send('updateActiveTabPosition', 1);
+      }
     }
   },
   { passive: true },

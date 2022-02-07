@@ -74,4 +74,13 @@ export const handleTabEvents = () => {
     tabs.splice(newIndex, 0, tabs.splice(oldIndex, 1)[0]);
     tabsStore({ tabs });
   });
+  ipcMain.on('updateActiveTabPosition', (_, offset: number) => {
+    const { tabs } = tabsStore();
+    const activeTabIndex = tabs.findIndex((tab) => tab.active);
+    let newTabIndex = activeTabIndex + offset;
+    if (newTabIndex > tabs.length - 1) newTabIndex = 0;
+    else if (newTabIndex < 0) newTabIndex = tabs.length - 1;
+    tabs.splice(newTabIndex, 0, tabs.splice(activeTabIndex, 1)[0]);
+    tabsStore({ tabs });
+  });
 };

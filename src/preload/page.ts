@@ -1,5 +1,3 @@
-window.addEventListener(
-  'keyup',
-  (event: KeyboardEvent) => event.key === 'F5' && location.reload(),
-  { passive: true },
-);
+addEventListener('keyup', (event: KeyboardEvent) => event.key === 'F5' && location.reload(), {
+  passive: true,
+});

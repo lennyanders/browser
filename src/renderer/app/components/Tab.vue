@@ -131,6 +131,7 @@
       }
     }
 
+    &:focus-within &__icons,
     &:hover &__icons {
       transform: none;
     }

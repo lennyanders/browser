@@ -14,10 +14,17 @@
     dragging.value = false;
     updateTabPosition(event.oldIndex, event.newIndex);
   };
+
+  const removeFocus = (event: MouseEvent) => {
+    const { activeElement } = document;
+    if ((<HTMLDListElement>event.target).contains(activeElement)) {
+      (<HTMLElement>document.activeElement).blur?.();
+    }
+  };
 </script>
 
 <template>
-  <div class="tabs">
+  <div class="tabs" @mouseleave.passive="removeFocus">
     <Draggable
       v-model="tabsStore.tabs"
       itemKey="id"
@@ -95,7 +102,7 @@
       border-right: var(--border);
       transition: transform 0.2s ease;
 
-      // &,
+      &:focus-within,
       &:hover {
         transform: translateX(-2.5rem) translateX(100%);
       }

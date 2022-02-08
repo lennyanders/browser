@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { Tab } from '../../../main/modules/tabs';
   import { mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
+  import { removeFocus } from '../utils';
   import { tabsStore } from '../stores/tabs';
   import Icon from './Icon.vue';
 
@@ -14,6 +15,7 @@
     class="tab"
     :class="{ 'tab--active': tab.id === tabsStore.activeTabId }"
     @click.passive.middle="deleteTab(tab.id)"
+    @mouseleave.passive="removeFocus"
   >
     <button type="button" class="tab__title" @click.passive="setActiveTab({ id: tab.id })">
       {{ tab.title }}

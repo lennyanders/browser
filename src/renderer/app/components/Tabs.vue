@@ -2,6 +2,7 @@
   import Draggable from 'vuedraggable';
   import { mdiPlus } from '@mdi/js';
   import { ref } from 'vue';
+  import { removeFocus } from '../utils';
   import { tabsStore } from '../stores/tabs';
   import Icon from './Icon.vue';
   import Tab from './Tab.vue';
@@ -13,13 +14,6 @@
   const onDragEnd = (event: Event & { oldIndex: number; newIndex: number }) => {
     dragging.value = false;
     updateTabPosition(event.oldIndex, event.newIndex);
-  };
-
-  const removeFocus = (event: MouseEvent) => {
-    const { activeElement } = document;
-    if ((<HTMLDListElement>event.target).contains(activeElement)) {
-      (<HTMLElement>document.activeElement).blur?.();
-    }
   };
 </script>
 

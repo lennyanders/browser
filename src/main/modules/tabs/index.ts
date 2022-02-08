@@ -9,7 +9,6 @@ export type Tab = {
   title: string;
   url: string;
   faviconUrl?: string;
-  active?: boolean;
   loading?: boolean;
   loadInBackground?: boolean;
   children?: Tab[];
@@ -17,11 +16,12 @@ export type Tab = {
 
 type TabsStore = {
   tabs: Tab[];
+  activeTabId: number;
   nextTabId: number;
 };
 
 export const tabsStore = createStore<TabsStore>(join(userDataPath, 'tabs.json'), {
-  defaultValue: { tabs: [{ ...defaultNewTab, id: 0 }], nextTabId: 1 },
+  defaultValue: { tabs: [{ ...defaultNewTab, id: 0 }], activeTabId: 0, nextTabId: 1 },
   afterDeserialize(value) {
     value.tabs.forEach((tab, index) => (tab.id = index));
     value.nextTabId = value.tabs.length;

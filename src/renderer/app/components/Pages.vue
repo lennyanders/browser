@@ -6,17 +6,15 @@
 
 <script lang="ts" setup>
   import Page from './Page.vue';
-  import { tabs } from '../stores/tabs';
+  import { tabsStore } from '../stores/tabs';
 
   // order tabs by id, so v-for will not reorder/patch dom after sorting
-  const orderedTab = computed(() =>
-    tabs.value ? tabs.value.slice().sort((a, b) => a.id - b.id) : [],
-  );
+  const orderedTabs = computed(() => tabsStore.value.tabs.slice().sort((a, b) => a.id - b.id));
 </script>
 
 <template>
   <div class="pages">
-    <Page v-for="tab of orderedTab" :tab="tab" />
+    <Page v-for="tab of orderedTabs" :tab="tab" />
     <span class="target-url" :hidden="!targetUrl">{{ targetUrl }}</span>
   </div>
 </template>

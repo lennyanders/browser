@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { Tab } from '../../../main/modules/tabs';
   import { mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
+  import { tabsStore } from '../stores/tabs';
   import Icon from './Icon.vue';
 
   defineProps<{ tab: Tab }>();
@@ -9,7 +10,11 @@
 </script>
 
 <template>
-  <li class="tab" :class="{ 'tab--active': tab.active }" @click.passive.middle="deleteTab(tab.id)">
+  <li
+    class="tab"
+    :class="{ 'tab--active': tab.id === tabsStore.activeTabId }"
+    @click.passive.middle="deleteTab(tab.id)"
+  >
     <button type="button" class="tab__title" @click.passive="setActiveTab({ id: tab.id })">
       {{ tab.title }}
     </button>

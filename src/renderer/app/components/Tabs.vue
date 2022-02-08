@@ -2,7 +2,7 @@
   import Draggable from 'vuedraggable';
   import { mdiPlus } from '@mdi/js';
   import { ref } from 'vue';
-  import { tabs } from '../stores/tabs';
+  import { tabsStore } from '../stores/tabs';
   import Icon from './Icon.vue';
   import Tab from './Tab.vue';
 
@@ -19,7 +19,7 @@
 <template>
   <div class="tabs">
     <Draggable
-      v-model="tabs"
+      v-model="tabsStore.tabs"
       itemKey="id"
       class="tabs__inner"
       tag="transition-group"

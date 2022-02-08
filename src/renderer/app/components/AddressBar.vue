@@ -11,14 +11,16 @@
   } from '@mdi/js';
   import { computed, ref } from 'vue';
   import { defaultNewTab } from '../../../shared/consts';
-  import { tabs } from '../stores/tabs';
+  import { tabsStore } from '../stores/tabs';
   import { reloadActiveTab } from '../utils';
   import Icon from './Icon.vue';
   import WindowControls from './WindowControls.vue';
 
   const activeTabUrl = computed({
     get: () => {
-      const activeTabUrl = tabs.value?.find((tab) => tab.active)?.url;
+      const activeTabUrl = tabsStore.value.tabs.find(
+        (tab) => tab.id === tabsStore.value.activeTabId,
+      )?.url;
       if (!activeTabUrl || activeTabUrl === defaultNewTab.url) return '';
 
       return decodeURIComponent(activeTabUrl);

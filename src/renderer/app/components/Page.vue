@@ -1,8 +1,9 @@
 <script lang="ts" setup>
   import type { NewWindowEvent } from 'electron';
   import type { Tab } from '../../../main/modules/tabs';
-  import { onMounted, ref, watch } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
   import { targetUrl } from './Pages.vue';
+  import { tabsStore } from '../stores/tabs';
 
   const props = defineProps<{ tab: Tab }>();
 
@@ -10,6 +11,7 @@
   const { preloadPath, getUserAgentForUrl, showContextMenu } = window.browser.page;
 
   const webview = ref<Electron.WebviewTag>();
+  const isActive = computed(() => props.tab.id === tabsStore.value.activeTabId);
 
   const updateFavicon = (url: string) => {
     const image = new Image();
@@ -20,23 +22,20 @@
 
   const handleNewWindow = (event: NewWindowEvent) => {
     if (event.disposition === 'background-tab') return createTab({ url: event.url });
-    if (event.disposition === 'foreground-tab') return createTab({ url: event.url, active: true });
+    if (event.disposition === 'foreground-tab') return createTab({ url: event.url }, true);
   };
 
   onMounted(() => {
     const view = webview.value!;
 
-    watch(
-      () => props.tab.active,
-      (active) => {
-        if (!view.src) {
-          view.useragent = getUserAgentForUrl(props.tab.url);
-          view.src = props.tab.url;
-        }
+    watch(isActive, (isActive) => {
+      if (isActive && !view.src) {
+        view.useragent = getUserAgentForUrl(props.tab.url);
+        view.src = props.tab.url;
+      }
 
-        view.hidden = !active;
-      },
-    );
+      view.hidden = !isActive;
+    });
 
     watch(
       () => props.tab.url,
@@ -57,9 +56,9 @@
     :preload="preloadPath"
     :nodeIntegration="false"
     :contextIsolation="true"
-    :useragent="tab.active || tab.loadInBackground ? getUserAgentForUrl(tab.url) : undefined"
-    :src="tab.active || tab.loadInBackground ? tab.url : undefined"
-    :hidden="!tab.active"
+    :useragent="isActive || tab.loadInBackground ? getUserAgentForUrl(tab.url) : undefined"
+    :src="isActive || tab.loadInBackground ? tab.url : undefined"
+    :hidden="!isActive"
     class="page"
     @updateTargetUrl.passive="targetUrl = decodeURIComponent($event.url)"
     @didNavigate.passive="updateTab(tab.id, { url: $event.url })"

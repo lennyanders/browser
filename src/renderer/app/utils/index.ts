@@ -1,7 +1,7 @@
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 
 export const getToRef = <T>(fn: (cb: (type: T) => void) => T) => {
-  const state = ref<T>();
+  const state = ref<T>() as Ref<T>;
   state.value = fn((newState) => (state.value = newState));
   return state;
 };

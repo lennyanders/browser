@@ -75,7 +75,7 @@
     height: 2rem;
     margin-bottom: 0.25rem;
     line-height: 2rem;
-    overflow: hidden;
+    overflow: clip;
     background-color: var(--tab-bg);
     font-size: 0.875rem;
     transition: --tab-bg 0.2s ease, color 0.2s ease;

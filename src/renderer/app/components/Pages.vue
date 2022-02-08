@@ -9,7 +9,7 @@
   import { tabsStore } from '../stores/tabs';
 
   // order tabs by id, so v-for will not reorder/patch dom after sorting
-  const orderedTabs = computed(() => tabsStore.value.tabs.slice().sort((a, b) => a.id - b.id));
+  const orderedTabs = computed(() => tabsStore.tabs.slice().sort((a, b) => a.id - b.id));
 </script>
 
 <template>

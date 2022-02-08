@@ -18,9 +18,7 @@
 
   const activeTabUrl = computed({
     get: () => {
-      const activeTabUrl = tabsStore.value.tabs.find(
-        (tab) => tab.id === tabsStore.value.activeTabId,
-      )?.url;
+      const activeTabUrl = tabsStore.tabs.find((tab) => tab.id === tabsStore.activeTabId)?.url;
       if (!activeTabUrl || activeTabUrl === defaultNewTab.url) return '';
 
       return decodeURIComponent(activeTabUrl);

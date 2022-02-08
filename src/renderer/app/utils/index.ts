@@ -1,9 +1,16 @@
-import { Ref, ref } from 'vue';
+import { reactive, ref, Ref, UnwrapNestedRefs } from 'vue';
 
-export const getToRef = <T>(fn: (cb: (type: T) => void) => T) => {
-  const state = ref<T>() as Ref<T>;
-  state.value = fn((newState) => (state.value = newState));
-  return state;
+export const getToReactive = <T>(fn: (cb: (type: T) => void) => T) => {
+  const value = fn((newState) => {
+    if (isObject) Object.assign(state, newState);
+    // @ts-ignore
+    else state.value = newState;
+  });
+  const isObject = typeof value === 'object';
+  // @ts-ignore
+  const state = isObject ? reactive(value) : ref(value);
+
+  return state as T extends object ? UnwrapNestedRefs<T> : Ref<T>;
 };
 
 export const reloadActiveTab = () => {

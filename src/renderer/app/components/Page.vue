@@ -11,7 +11,7 @@
   const { preloadPath, getUserAgentForUrl, showContextMenu } = window.browser.page;
 
   const webview = ref<Electron.WebviewTag>();
-  const isActive = computed(() => props.tab.id === tabsStore.value.activeTabId);
+  const isActive = computed(() => props.tab.id === tabsStore.activeTabId);
 
   const updateFavicon = (url: string) => {
     const image = new Image();

@@ -1,3 +1,3 @@
-import { getToRef } from '../../utils';
+import { getToReactive } from '../../utils';
 
-export const tabsStore = getToRef(window.browser.tabs.getAll);
+export const tabsStore = getToReactive(window.browser.tabs.getAll);

@@ -1,5 +1,6 @@
 import { ContextMenuEvent, ipcMain, Menu, clipboard } from 'electron';
 import { getUrl } from '../../utils/url';
+import { createTab } from '../tabs/utils';
 
 const showMenu = (params: ContextMenuEvent['params']) => {
   console.log(params);
@@ -12,6 +13,7 @@ const showMenu = (params: ContextMenuEvent['params']) => {
     menuItems.push(
       {
         label: 'Open link in new tab',
+        click: () => createTab({ url, title: params.linkText || url }),
       },
       {
         label: 'Copy link',

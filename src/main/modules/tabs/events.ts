@@ -2,7 +2,7 @@ import { app, ipcMain } from 'electron';
 import { Tab, tabsStore } from '.';
 import { defaultNewTab } from '../../../shared/consts';
 import { isNumber } from '../../utils/types';
-import { setActiveTab } from './utils';
+import { setActiveTab, createTab } from './utils';
 
 export type SetActiveTabOptions = { id?: number; index?: number; offset?: number; last?: boolean };
 
@@ -14,21 +14,9 @@ export const handleTabEvents = () => {
     const { tabs, activeTabId } = tabsStore();
     event.returnValue = { tabs, activeTabId };
   });
-  ipcMain.on('newTab', () => {
-    const { tabs, nextTabId } = tabsStore();
-    tabs.push({ ...defaultNewTab, id: nextTabId });
-    tabsStore({ tabs, activeTabId: nextTabId, nextTabId: nextTabId + 1 });
-  });
+  ipcMain.on('newTab', () => createTab(defaultNewTab, true, true));
   ipcMain.on('createTab', (_, partialTab: Pick<Tab, 'url'>, active: boolean) => {
-    const { tabs, activeTabId, nextTabId } = tabsStore();
-    const activeTabIndex = tabs.findIndex((tab) => tab.id === activeTabId);
-    tabs.splice(activeTabIndex + 1, 0, {
-      ...partialTab,
-      title: partialTab.url,
-      loadInBackground: true,
-      id: nextTabId,
-    });
-    tabsStore({ tabs, activeTabId: active ? nextTabId : activeTabId, nextTabId: nextTabId + 1 });
+    createTab(partialTab, active);
   });
   ipcMain.on('setActiveTab', (_, { id, index, offset, last }: SetActiveTabOptions) => {
     const { tabs, activeTabId } = tabsStore();
@@ -45,8 +33,9 @@ export const handleTabEvents = () => {
     let { tabs, activeTabId } = tabsStore();
     if (tabs.length === 1) app.quit();
 
-    const tabIndex = tabs.findIndex(id ? (tab) => tab.id === id : (tab) => tab.id === activeTabId);
-    if (id === activeTabId) activeTabId = (tabs[tabIndex + 1] || tabs[tabIndex - 1]).id;
+    const tabId = id || activeTabId;
+    const tabIndex = tabs.findIndex((tab) => tab.id === tabId);
+    if (tabId === activeTabId) activeTabId = (tabs[tabIndex + 1] || tabs[tabIndex - 1]).id;
 
     tabs.splice(tabIndex, 1);
     tabsStore({ tabs, activeTabId });

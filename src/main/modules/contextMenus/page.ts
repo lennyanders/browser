@@ -1,8 +1,8 @@
-import { ContextMenuEvent, ipcMain, Menu, clipboard, BrowserWindow } from 'electron';
+import { ContextMenuEvent, ipcMain, Menu, clipboard, WebContents } from 'electron';
 import { getUrl } from '../../utils/url';
 import { createTab } from '../tabs/utils';
 
-const showMenu = (params: ContextMenuEvent['params']) => {
+const showMenu = (params: ContextMenuEvent['params'], webContents: WebContents) => {
   console.log(params);
 
   const menuItems: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [];
@@ -48,10 +48,11 @@ const showMenu = (params: ContextMenuEvent['params']) => {
       },
       {
         label: 'Save image',
-        click: () => BrowserWindow.getFocusedWindow()?.webContents.downloadURL(params.srcURL),
+        click: () => webContents.downloadURL(params.srcURL),
       },
       {
         label: 'Copy image',
+        click: () => webContents.copyImageAt(params.x, params.y),
       },
       {
         label: 'Copy image link',
@@ -61,11 +62,10 @@ const showMenu = (params: ContextMenuEvent['params']) => {
   }
 
   menuItems.push(
-    {
-      type: 'separator',
-    },
+    { type: 'separator' },
     {
       label: 'Inspect',
+      click: () => webContents.inspectElement(params.x, params.y),
     },
   );
 
@@ -73,5 +73,8 @@ const showMenu = (params: ContextMenuEvent['params']) => {
 };
 
 export const handlePageContextMenu = () => {
-  ipcMain.on('showPageContextMenu', (_, params: ContextMenuEvent['params']) => showMenu(params));
+  ipcMain.on('initPageContextMenu', (event) => {
+    const webContents = event.sender;
+    webContents.on('context-menu', (_, params) => showMenu(params, webContents));
+  });
 };

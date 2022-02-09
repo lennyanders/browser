@@ -8,7 +8,7 @@
   const props = defineProps<{ tab: Tab }>();
 
   const { updateTab, createTab } = window.browser.tabs;
-  const { preloadPath, getUserAgentForUrl, showContextMenu } = window.browser.page;
+  const { preloadPath, getUserAgentForUrl } = window.browser.page;
 
   const webview = ref<Electron.WebviewTag>();
   const isActive = computed(() => props.tab.id === tabsStore.activeTabId);
@@ -68,7 +68,6 @@
     @pageFaviconUpdated.passive="updateFavicon($event.favicons[0])"
     @didStartLoading.passive="updateTab(tab.id, { loading: true })"
     @didStopLoading.passive="updateTab(tab.id, { loading: false })"
-    @contextMenu.passive="showContextMenu($event.params)"
   ></webview>
 </template>
 

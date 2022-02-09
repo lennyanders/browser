@@ -1,4 +1,4 @@
-import { contextBridge, ContextMenuEvent, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { Tab } from '../main/modules/tabs';
 import { SetActiveTabOptions } from '../main/modules/tabs/events';
 import { get } from './utils';
@@ -32,9 +32,6 @@ const tabs = {
 const page = {
   preloadPath: ipcRenderer.sendSync('getPagePreloadPath'),
   getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url) as string,
-  showContextMenu: (params: ContextMenuEvent['params']) => {
-    ipcRenderer.send('showPageContextMenu', params);
-  },
 };
 
 const browser = { windowActions, tabs, page };

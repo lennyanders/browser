@@ -1,4 +1,4 @@
-import { ContextMenuEvent, ipcMain, Menu, clipboard } from 'electron';
+import { ContextMenuEvent, ipcMain, Menu, clipboard, BrowserWindow } from 'electron';
 import { getUrl } from '../../utils/url';
 import { createTab } from '../tabs/utils';
 
@@ -35,6 +35,7 @@ const showMenu = (params: ContextMenuEvent['params']) => {
       },
       {
         label: `Search DuckDuckGo for "${selectionText}"`,
+        click: () => createTab({ url: `https://duckduckgo.com/?q=${selectionText}` }, true),
       },
     );
   }
@@ -43,15 +44,18 @@ const showMenu = (params: ContextMenuEvent['params']) => {
     menuItems.push(
       {
         label: 'Open image in new tab',
+        click: () => createTab({ url: params.srcURL }),
       },
       {
         label: 'Save image',
+        click: () => BrowserWindow.getFocusedWindow()?.webContents.downloadURL(params.srcURL),
       },
       {
         label: 'Copy image',
       },
       {
         label: 'Copy image link',
+        click: () => (clipboard.clear(), clipboard.writeText(params.srcURL)),
       },
     );
   }

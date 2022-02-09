@@ -23,7 +23,11 @@ type TabsStore = {
 export const tabsStore = createStore<TabsStore>(join(userDataPath, 'tabs.json'), {
   defaultValue: { tabs: [{ ...defaultNewTab, id: 0 }], activeTabId: 0, nextTabId: 1 },
   afterDeserialize(value) {
-    value.tabs.forEach((tab, index) => (tab.id = index));
+    value.tabs.forEach((tab, index) => {
+      if (value.activeTabId === tab.id) value.activeTabId = index;
+
+      tab.id = index;
+    });
     value.nextTabId = value.tabs.length;
     return value;
   },

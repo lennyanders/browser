@@ -22,3 +22,9 @@ export const createTab = (
 
   tabsStore({ tabs, activeTabId: active ? nextTabId : activeTabId, nextTabId: nextTabId + 1 });
 };
+
+export const updateTab = (id: number, partialTab: Partial<Tab>) => {
+  const { tabs } = tabsStore();
+  tabs.forEach((tab) => tab.id === id && Object.assign(tab, partialTab));
+  tabsStore({ tabs });
+};

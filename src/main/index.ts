@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, webContents } from 'electron';
 import { join } from 'path';
 import { cwd } from './consts';
 import { isDev } from '../shared/consts';
@@ -7,6 +7,8 @@ import { useWindowActions } from './modules/windowActions';
 import { useTabs } from './modules/tabs';
 import { useCustomUserAgent } from './modules/userAgent';
 import { showPageMenu } from './modules/contextMenus/page';
+import { createTab, updateTab } from './modules/tabs/utils';
+import { exists } from './utils/url';
 
 const createWindow = () => {
   if (!isDev) registerProtocol();
@@ -38,9 +40,30 @@ const createWindow = () => {
     event.returnValue = join(cwd, 'preloads', 'page.js');
   });
 
-  ipcMain.on('tabWebview', (event, tabId: number) => {
-    const webContents = event.sender;
-    webContents.on('context-menu', (_, params) => showPageMenu(params, webContents));
+  ipcMain.on('tabWebview', (event, webContentsId: number, tabId: number) => {
+    const page = webContents.fromId(webContentsId);
+
+    page.on('context-menu', (_, params) => showPageMenu(params, page));
+
+    page.on('did-navigate', (_, url) => updateTab(tabId, { url }));
+    page.on('did-navigate-in-page', (_, url, isMainFrame) => {
+      if (isMainFrame) updateTab(tabId, { url });
+    });
+    page.on('page-title-updated', (_, title) => updateTab(tabId, { title }));
+    page.on('page-favicon-updated', async (_, [faviconUrl]) => {
+      if (await exists(faviconUrl)) updateTab(tabId, { faviconUrl });
+    });
+    page.on('did-start-loading', () => updateTab(tabId, { loading: true }));
+    page.on('did-stop-loading', () => updateTab(tabId, { loading: false }));
+    page.on('media-started-playing', () => updateTab(tabId, { audible: true }));
+    page.on('media-paused', () => updateTab(tabId, { audible: false }));
+    page.setWindowOpenHandler(({ disposition, url }) => {
+      if (disposition === 'foreground-tab') createTab({ url }, true);
+      else if (disposition === 'background-tab') createTab({ url });
+      return { action: 'deny' };
+    });
+
+    event.returnValue = updateTab(tabId, { title: page.getTitle(), url: page.getURL() });
   });
 
   useWindowActions(win);

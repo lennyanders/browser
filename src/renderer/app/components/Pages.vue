@@ -14,7 +14,7 @@
 
 <template>
   <div class="pages">
-    <Page v-for="tab of orderedTabs" :tab="tab" />
+    <Page v-for="tab of orderedTabs" :tab="tab" :key="tab.id" />
     <span class="target-url" :hidden="!targetUrl">{{ targetUrl }}</span>
   </div>
 </template>

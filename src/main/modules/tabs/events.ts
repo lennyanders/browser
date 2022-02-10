@@ -2,7 +2,7 @@ import { app, ipcMain } from 'electron';
 import { Tab, tabsStore } from '.';
 import { defaultNewTab } from '../../../shared/consts';
 import { isNumber } from '../../utils/types';
-import { setActiveTab, createTab } from './utils';
+import { setActiveTab, createTab, updateTab } from './utils';
 
 export type SetActiveTabOptions = { id?: number; index?: number; offset?: number; last?: boolean };
 
@@ -45,11 +45,7 @@ export const handleTabEvents = () => {
     tabs.forEach((tab) => tab.id === activeTabId && Object.assign(tab, partialTab));
     tabsStore({ tabs });
   });
-  ipcMain.on('updateTab', (_, id: number, partialTab: Partial<Tab>) => {
-    const { tabs } = tabsStore();
-    tabs.forEach((tab) => tab.id === id && Object.assign(tab, partialTab));
-    tabsStore({ tabs });
-  });
+  ipcMain.on('updateTab', (_, id: number, partialTab: Partial<Tab>) => updateTab(id, partialTab));
   ipcMain.on('updateTabPosition', (_, oldIndex: number, newIndex: number) => {
     const { tabs } = tabsStore();
     tabs.splice(newIndex, 0, tabs.splice(oldIndex, 1)[0]);

@@ -32,6 +32,9 @@ const tabs = {
 const page = {
   preloadPath: ipcRenderer.sendSync('getPagePreloadPath'),
   getUserAgentForUrl: (url: string) => ipcRenderer.sendSync('getUserAgentForUrl', url) as string,
+  registerTabWebview: (webContentsId: number, tabId: number) => {
+    ipcRenderer.sendSync('tabWebview', webContentsId, tabId);
+  },
 };
 
 const browser = { windowActions, tabs, page };

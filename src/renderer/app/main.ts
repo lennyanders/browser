@@ -30,16 +30,6 @@ declare module '@vue/runtime-core' {
           nodeIntegration: boolean;
           contextIsolation: boolean;
           onUpdateTargetUrl: (event: UpdateTargetUrlEvent) => void;
-          onDidNavigate: (event: DidNavigateEvent) => void;
-          onDidNavigateInPage: (event: DidNavigateInPageEvent) => void;
-          onNewWindow: (event: NewWindowEvent) => void;
-          onPageTitleUpdated: (event: PageTitleUpdatedEvent) => void;
-          onPageFaviconUpdated: (event: PageFaviconUpdatedEvent) => void;
-          onDidStartLoading: (event: Event) => void;
-          onDidStopLoading: (event: Event) => void;
-          onMediaStartedPlaying: (event: Event) => void;
-          onMediaPaused: (event: Event) => void;
-          onContextMenu: (event: ContextMenuEvent) => void;
         }>;
       };
     };

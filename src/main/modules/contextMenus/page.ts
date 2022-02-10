@@ -1,8 +1,8 @@
-import { ContextMenuEvent, ipcMain, Menu, clipboard, WebContents } from 'electron';
+import { ContextMenuEvent, Menu, clipboard, WebContents } from 'electron';
 import { getUrl } from '../../utils/url';
 import { createTab } from '../tabs/utils';
 
-const showMenu = (params: ContextMenuEvent['params'], webContents: WebContents) => {
+export const showPageMenu = (params: ContextMenuEvent['params'], webContents: WebContents) => {
   console.log(params);
 
   const menuItems: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [];
@@ -70,11 +70,4 @@ const showMenu = (params: ContextMenuEvent['params'], webContents: WebContents) 
   );
 
   if (menuItems.length) Menu.buildFromTemplate(menuItems).popup();
-};
-
-export const handlePageContextMenu = () => {
-  ipcMain.on('initPageContextMenu', (event) => {
-    const webContents = event.sender;
-    webContents.on('context-menu', (_, params) => showMenu(params, webContents));
-  });
 };

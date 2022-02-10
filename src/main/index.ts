@@ -6,7 +6,7 @@ import { registerProtocol } from './protocol';
 import { useWindowActions } from './modules/windowActions';
 import { useTabs } from './modules/tabs';
 import { useCustomUserAgent } from './modules/userAgent';
-import { useContextMenus } from './modules/contextMenus';
+import { showPageMenu } from './modules/contextMenus/page';
 
 const createWindow = () => {
   if (!isDev) registerProtocol();
@@ -38,10 +38,14 @@ const createWindow = () => {
     event.returnValue = join(cwd, 'preloads', 'page.js');
   });
 
+  ipcMain.on('tabWebview', (event, tabId: number) => {
+    const webContents = event.sender;
+    webContents.on('context-menu', (_, params) => showPageMenu(params, webContents));
+  });
+
   useWindowActions(win);
   useTabs();
   useCustomUserAgent(win);
-  useContextMenus();
 };
 
 app.whenReady().then(() => {

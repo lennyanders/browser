@@ -31,6 +31,8 @@
 
     const domReady = new Promise((resolve) => view.addEventListener('dom-ready', resolve));
 
+    (async () => (await domReady, view.send('tab', props.tab.id)))();
+
     watch(isActive, (isActive) => {
       if (isActive && !view.src) {
         view.useragent = getUserAgentForUrl(props.tab.url);

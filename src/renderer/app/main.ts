@@ -37,6 +37,8 @@ declare module '@vue/runtime-core' {
           onPageFaviconUpdated: (event: PageFaviconUpdatedEvent) => void;
           onDidStartLoading: (event: Event) => void;
           onDidStopLoading: (event: Event) => void;
+          onMediaStartedPlaying: (event: Event) => void;
+          onMediaPaused: (event: Event) => void;
           onContextMenu: (event: ContextMenuEvent) => void;
         }>;
       };

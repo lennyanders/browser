@@ -4,6 +4,7 @@
   import { computed, onMounted, ref, watch } from 'vue';
   import { targetUrl } from './Pages.vue';
   import { tabsStore } from '../stores/tabs';
+  import { mdiVectorCircle } from '@mdi/js';
 
   const props = defineProps<{ tab: Tab }>();
 
@@ -28,6 +29,8 @@
   onMounted(() => {
     const view = webview.value!;
 
+    const domReady = new Promise((resolve) => view.addEventListener('dom-ready', resolve));
+
     watch(isActive, (isActive) => {
       if (isActive && !view.src) {
         view.useragent = getUserAgentForUrl(props.tab.url);
@@ -38,8 +41,20 @@
     });
 
     watch(
+      () => props.tab.muted,
+      async (muted) => {
+        await domReady;
+        if (view.isAudioMuted() === (muted = !!muted)) return;
+
+        view.setAudioMuted(muted);
+      },
+      { immediate: true },
+    );
+
+    watch(
       () => props.tab.url,
-      (url) => {
+      async (url) => {
+        await domReady;
         if (view.isLoading() || view.getURL() === url) return;
 
         view.loadURL(url, { userAgent: getUserAgentForUrl(url) });
@@ -60,14 +75,16 @@
     :src="isActive || tab.loadInBackground ? tab.url : undefined"
     :hidden="!isActive"
     class="page"
-    @updateTargetUrl.passive="targetUrl = decodeURIComponent($event.url)"
-    @didNavigate.passive="updateTab(tab.id, { url: $event.url })"
-    @didNavigateInPage.passive="$event.isMainFrame && updateTab(tab.id, { url: $event.url })"
-    @newWindow.passive="handleNewWindow"
-    @pageTitleUpdated.passive="updateTab(tab.id, { title: $event.title })"
-    @pageFaviconUpdated.passive="updateFavicon($event.favicons[0])"
-    @didStartLoading.passive="updateTab(tab.id, { loading: true })"
-    @didStopLoading.passive="updateTab(tab.id, { loading: false })"
+    @updateTargetUrl="targetUrl = decodeURIComponent($event.url)"
+    @didNavigate="updateTab(tab.id, { url: $event.url })"
+    @didNavigateInPage="$event.isMainFrame && updateTab(tab.id, { url: $event.url })"
+    @newWindow="handleNewWindow"
+    @pageTitleUpdated="updateTab(tab.id, { title: $event.title })"
+    @pageFaviconUpdated="updateFavicon($event.favicons[0])"
+    @didStartLoading="updateTab(tab.id, { loading: true })"
+    @didStopLoading="updateTab(tab.id, { loading: false })"
+    @mediaStartedPlaying="updateTab(tab.id, { audible: true })"
+    @mediaPaused="updateTab(tab.id, { audible: false })"
   ></webview>
 </template>
 

@@ -8,7 +8,9 @@ export type Tab = {
   id: number;
   title: string;
   url: string;
+  muted?: boolean;
   faviconUrl?: string;
+  audible?: boolean;
   loading?: boolean;
   loadInBackground?: boolean;
   children?: Tab[];
@@ -33,6 +35,7 @@ export const tabsStore = createStore<TabsStore>(join(userDataPath, 'tabs.json'),
   },
   beforeSerialize(value) {
     value.tabs.forEach((tab) => {
+      delete tab.audible;
       delete tab.loading;
       delete tab.loadInBackground;
       if (!tab.faviconUrl) delete tab.faviconUrl;

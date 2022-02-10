@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import type { Tab } from '../../../main/modules/tabs';
-  import { mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
+  import { mdiVolumeHigh, mdiVolumeOff, mdiClose, mdiFileOutline } from '@mdi/js';
   import { removeFocus } from '../utils';
   import { tabsStore } from '../stores/tabs';
   import Icon from './Icon.vue';
 
   defineProps<{ tab: Tab }>();
 
-  const { setActiveTab, deleteTab } = window.browser.tabs;
+  const { setActiveTab, deleteTab, updateTab } = window.browser.tabs;
 </script>
 
 <template>
@@ -21,13 +21,24 @@
       {{ tab.title }}
     </button>
     <div class="tab__icons">
-      <button type="button" class="tab__icon" aria-label="mute tab">
+      <button
+        type="button"
+        class="tab__icon"
+        aria-label="mute tab"
+        :disabled="!tab.audible"
+        @click.passive="updateTab(tab.id, { muted: !tab.muted })"
+      >
         <svg v-if="tab.loading" class="tab__spinner" viewBox="0 0 50 50">
           <circle fill="none" cx="25" cy="25" r="20" stroke="currentColor" stroke-width="5" />
         </svg>
         <img v-else-if="tab.faviconUrl" :src="tab.faviconUrl" alt="" />
         <Icon v-else :path="mdiFileOutline" />
-        <Icon v-if="false" :path="mdiVolumeOff" size="s" class="tab__audio" />
+        <Icon
+          :path="tab.muted ? mdiVolumeOff : mdiVolumeHigh"
+          size="s"
+          class="tab__audio"
+          :class="{ 'tab__audio--visible': tab.audible }"
+        />
       </button>
       <button
         type="button"
@@ -149,6 +160,14 @@
       position: absolute;
       bottom: 0.25rem;
       right: 0.25rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s;
+
+      &--visible {
+        opacity: 1;
+        visibility: visible;
+      }
     }
 
     &__spinner {
